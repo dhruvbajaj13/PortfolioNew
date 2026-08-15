@@ -86,10 +86,7 @@ export default function Home() {
         <ActHero />
         <ActAbout />
         <ActExperience />
-        <ActTechStack
-          selectedTech={selectedTech}
-          setSelectedTech={setSelectedTech}
-        />
+        <ActTechStack />
         <ActProjects
           activeProjectIndex={activeProjectIndex}
           setActiveProjectIndex={setActiveProjectIndex}

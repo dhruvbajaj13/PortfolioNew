@@ -1,155 +1,232 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export interface TechCategory {
-  title: string;
-  skills: { name: string; level: number; desc: string }[];
-}
+/* ─── Tech Data with SVG icon URLs ─── */
+const ALL_TECH = [
+  // Languages
+  { name: 'Java',         category: 'Languages',   emoji: '☕', color: '#E76F00', bg: '#E76F001A' },
+  { name: 'JavaScript',  category: 'Languages',   emoji: '🟨', color: '#F7DF1E', bg: '#F7DF1E1A' },
+  { name: 'TypeScript',  category: 'Languages',   emoji: '🔷', color: '#3178C6', bg: '#3178C61A' },
+  { name: 'Python',      category: 'Languages',   emoji: '🐍', color: '#3776AB', bg: '#3776AB1A' },
+  { name: 'C++',         category: 'Languages',   emoji: '⚙️', color: '#00599C', bg: '#00599C1A' },
 
-export const SKILL_CATEGORIES: TechCategory[] = [
-  {
-    title: 'Frontend & UI Engineering',
-    skills: [
-      { name: 'React.js', level: 92, desc: 'Component Architecture, Hooks, Custom State' },
-      { name: 'Next.js 15', level: 90, desc: 'App Router, Server Components, SSR/SSG' },
-      { name: 'TypeScript', level: 88, desc: 'Strict Typing, Generics, Interfaces' },
-      { name: 'Tailwind CSS', level: 95, desc: 'Responsive Design, Custom Tokens, Design Systems' },
-      { name: 'Framer Motion', level: 85, desc: 'Layout Animations, Gestures, Keyframes' },
-      { name: 'HTML5 / CSS3', level: 95, desc: 'Semantic Markup, Flexbox, CSS Grid' },
-    ],
-  },
-  {
-    title: 'Backend & Database Systems',
-    skills: [
-      { name: 'Node.js', level: 88, desc: 'Event Loop, Async I/O, REST Services' },
-      { name: 'Express.js', level: 88, desc: 'Middleware, Routing, API Architecture' },
-      { name: 'Java', level: 85, desc: 'OOP, Collections, Enterprise Architecture' },
-      { name: 'MongoDB', level: 82, desc: 'Document Schemas, Aggregation Pipelines' },
-      { name: 'PostgreSQL', level: 80, desc: 'Relational Schemas, Indexing, SQL Queries' },
-      { name: 'REST APIs', level: 92, desc: 'Endpoint Design, JSON Schemas, Auth' },
-    ],
-  },
-  {
-    title: 'AI, ML & Agentic Systems',
-    skills: [
-      { name: 'Python', level: 86, desc: 'Data Structures, Scripting, AI Libraries' },
-      { name: 'LangChain', level: 82, desc: 'LLM Orchestration, Prompt Templates, Chains' },
-      { name: 'RAG Pipelines', level: 85, desc: 'Vector Embeddings, Retrieval, Context Ingestion' },
-      { name: 'Vector DBs', level: 80, desc: 'ChromaDB, Pinecone, Semantic Search' },
-    ],
-  },
-  {
-    title: 'DevOps, Tools & Methodologies',
-    skills: [
-      { name: 'Git / GitHub', level: 90, desc: 'Version Control, Branching, PR Workflows' },
-      { name: 'Docker', level: 75, desc: 'Containerization, Dockerfiles, Compose' },
-      { name: 'Postman', level: 88, desc: 'API Testing, Documentation, Collection Runners' },
-      { name: 'Agile / Scrum', level: 85, desc: 'Sprint Planning, Standups, Feature Iteration' },
-    ],
-  },
+  // Frontend
+  { name: 'React.js',    category: 'Frontend',    emoji: '⚛️', color: '#61DAFB', bg: '#61DAFB1A' },
+  { name: 'Next.js',     category: 'Frontend',    emoji: '▲',  color: '#FFFFFF', bg: '#FFFFFF12' },
+  { name: 'Tailwind CSS',category: 'Frontend',    emoji: '🌊', color: '#06B6D4', bg: '#06B6D41A' },
+  { name: 'Framer Motion',category:'Frontend',    emoji: '🎞️', color: '#BB4BFF', bg: '#BB4BFF1A' },
+  { name: 'Three.js',    category: 'Frontend',    emoji: '🧊', color: '#FFFFFF', bg: '#FFFFFF12' },
+  { name: 'HTML5/CSS3',  category: 'Frontend',    emoji: '🌐', color: '#E34F26', bg: '#E34F261A' },
+
+  // Backend
+  { name: 'Node.js',     category: 'Backend',     emoji: '🟢', color: '#339933', bg: '#3399331A' },
+  { name: 'Express.js',  category: 'Backend',     emoji: '🚂', color: '#FFFFFF', bg: '#FFFFFF12' },
+  { name: 'REST APIs',   category: 'Backend',     emoji: '🔗', color: '#00E5FF', bg: '#00E5FF1A' },
+  { name: 'MongoDB',     category: 'Backend',     emoji: '🍃', color: '#47A248', bg: '#47A2481A' },
+  { name: 'PostgreSQL',  category: 'Backend',     emoji: '🐘', color: '#336791', bg: '#3367911A' },
+  { name: 'MySQL',       category: 'Backend',     emoji: '🐬', color: '#4479A1', bg: '#4479A11A' },
+  { name: 'ChromaDB',    category: 'Backend',     emoji: '🔮', color: '#A855F7', bg: '#A855F71A' },
+
+  // AI / ML
+  { name: 'LangChain',   category: 'AI / ML',     emoji: '🔗', color: '#1C3C3C', bg: '#00E5FF1A' },
+  { name: 'LangGraph',   category: 'AI / ML',     emoji: '🕸️', color: '#FF6B6B', bg: '#FF6B6B1A' },
+  { name: 'RAG',         category: 'AI / ML',     emoji: '📚', color: '#F59E0B', bg: '#F59E0B1A' },
+  { name: 'LLMs',        category: 'AI / ML',     emoji: '🤖', color: '#8B5CF6', bg: '#8B5CF61A' },
+  { name: 'Vector DBs',  category: 'AI / ML',     emoji: '🗃️', color: '#EC4899', bg: '#EC48991A' },
+  { name: 'Embedding Models', category: 'AI / ML',emoji: '🧠', color: '#10B981', bg: '#10B9811A' },
+
+  // Tools
+  { name: 'Git',         category: 'Tools',       emoji: '🔧', color: '#F05032', bg: '#F050321A' },
+  { name: 'GitHub',      category: 'Tools',       emoji: '🐙', color: '#FFFFFF', bg: '#FFFFFF12' },
+  { name: 'Docker',      category: 'Tools',       emoji: '🐳', color: '#2496ED', bg: '#2496ED1A' },
+  { name: 'Postman',     category: 'Tools',       emoji: '📮', color: '#FF6C37', bg: '#FF6C371A' },
+  { name: 'Jira',        category: 'Tools',       emoji: '📋', color: '#0052CC', bg: '#0052CC1A' },
+  { name: 'Jupyter',     category: 'Tools',       emoji: '📓', color: '#F37626', bg: '#F376261A' },
 ];
 
-export const TECH_NODES = SKILL_CATEGORIES.flatMap((cat) => cat.skills.map((s) => s.name));
+export const TECH_NODES = ALL_TECH.map((t) => t.name);
 
-export function ActTechStack({
-  selectedTech,
-  setSelectedTech,
-}: {
-  selectedTech?: string | null;
-  setSelectedTech?: (tech: string | null) => void;
-}) {
-  const [activeCategory, setActiveCategory] = useState<number>(0);
+const TABS = ['All', 'Languages', 'Frontend', 'Backend', 'AI / ML', 'Tools'];
+
+
+/* ─── Category label color map ─── */
+const CAT_COLOR: Record<string, string> = {
+  Languages: '#F7DF1E',
+  Frontend:  '#61DAFB',
+  Backend:   '#47A248',
+  'AI / ML': '#8B5CF6',
+  Tools:     '#F05032',
+};
+
+export function ActTechStack() {
+  const [activeTab, setActiveTab] = useState('All');
+
+  const filtered = activeTab === 'All'
+    ? ALL_TECH
+    : ALL_TECH.filter((t) => t.category === activeTab);
+
+  /* Group by category for "All" view */
+  const grouped: Record<string, typeof ALL_TECH> = {};
+  filtered.forEach((t) => {
+    if (!grouped[t.category]) grouped[t.category] = [];
+    grouped[t.category].push(t);
+  });
 
   return (
     <section
       id="skills"
-      className="relative w-full flex flex-col justify-center px-4 sm:px-8 md:px-16 py-16 md:py-24 overflow-hidden pointer-events-none bg-[#050505]"
+      className="relative w-full px-4 sm:px-8 md:px-16 py-16 md:py-24 overflow-hidden bg-[#050505]"
     >
-      <div className="max-w-7xl mx-auto w-full space-y-12">
-        
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[300px] rounded-full bg-[#00E5FF]/4 blur-[140px]" />
+      </div>
+
+      <div className="max-w-6xl mx-auto w-full space-y-12 relative z-10">
+
         {/* Section Header */}
-        <div className="text-center space-y-3 pointer-events-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
+        <div className="text-center space-y-3">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.2 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="font-display text-4xl sm:text-6xl font-extrabold text-white tracking-tight"
+            className="font-mono text-xs font-semibold tracking-[0.25em] text-[#00E5FF] uppercase"
+          >
+            — Tech Arsenal —
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="font-display text-4xl sm:text-5xl font-extrabold text-white tracking-tight"
           >
             Technical <span className="text-[#00E5FF]">Skills</span>
           </motion.h2>
-
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
-            className="font-display text-base sm:text-xl font-medium text-[#A8A8A8] tracking-wide max-w-2xl mx-auto"
+            className="text-[#A8A8A8] text-base sm:text-lg max-w-xl mx-auto"
           >
-            Technologies, frameworks, and engineering methodologies
+            Technologies, frameworks & tools I build with
           </motion.p>
         </div>
 
-        {/* Category Filter Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pointer-events-auto">
-          {SKILL_CATEGORIES.map((cat, idx) => {
-            const isActive = activeCategory === idx;
+        {/* Filter Tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="flex flex-wrap items-center justify-center gap-2"
+        >
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab;
             return (
               <button
-                key={cat.title}
-                onClick={() => setActiveCategory(idx)}
-                className={`px-5 py-2.5 rounded-full font-sans text-xs sm:text-sm font-semibold transition-all duration-300 border ${
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`relative px-5 py-2 rounded-full text-sm font-semibold font-sans transition-all duration-300 border ${
                   isActive
-                    ? 'bg-[#00E5FF] text-black font-bold border-[#00E5FF] shadow-[0_0_20px_rgba(0,229,255,0.35)] scale-105'
-                    : 'glass-panel text-[#A8A8A8] border-white/10 hover:text-white hover:border-[#00E5FF]/50'
+                    ? 'text-black bg-[#00E5FF] border-[#00E5FF] shadow-[0_0_20px_rgba(0,229,255,0.35)]'
+                    : 'text-[#A8A8A8] bg-white/4 border-white/10 hover:text-white hover:border-white/25 hover:bg-white/8'
                 }`}
               >
-                {cat.title}
+                {tab}
               </button>
             );
           })}
-        </div>
+        </motion.div>
 
-        {/* Skills Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pointer-events-auto">
-          {SKILL_CATEGORIES[activeCategory].skills.map((skill, sIdx) => (
-            <motion.div
-              key={skill.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: sIdx * 0.08 }}
-              onClick={() => setSelectedTech?.(skill.name)}
-              className="p-6 rounded-2xl glass-panel border border-white/10 hover:border-[#00E5FF]/50 transition-all duration-300 shadow-xl bg-[#080808] space-y-4 group hover:scale-[1.02] cursor-pointer"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-lg sm:text-xl font-bold text-white group-hover:text-[#00E5FF] transition-colors">
-                  {skill.name}
-                </h3>
-                <span className="font-mono text-xs font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-3 py-1 rounded-full border border-[#00E5FF]/30">
-                  {skill.level}%
-                </span>
+        {/* Tech Grid */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35 }}
+          >
+            {activeTab === 'All' ? (
+              /* ── Grouped by category ── */
+              <div className="space-y-10">
+                {Object.entries(grouped).map(([category, techs]) => (
+                  <div key={category}>
+                    {/* Category Label */}
+                    <div className="flex items-center gap-3 mb-5">
+                      <span
+                        className="font-display text-lg font-bold"
+                        style={{ color: CAT_COLOR[category] ?? '#00E5FF' }}
+                      >
+                        {category}
+                      </span>
+                      <div className="flex-1 h-px bg-white/6" />
+                      <span className="text-[#404040] text-xs font-mono">{techs.length} techs</span>
+                    </div>
+
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+                      {techs.map((tech, i) => (
+                        <TechCard key={tech.name} tech={tech} index={i} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              <p className="font-sans text-xs sm:text-sm text-[#A8A8A8] leading-relaxed">
-                {skill.desc}
-              </p>
-
-              {/* Progress Level Bar */}
-              <div className="w-full h-2 rounded-full bg-[#050505] p-0.5 border border-white/10 overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${skill.level}%` }}
-                  transition={{ duration: 1, ease: 'easeOut' }}
-                  className="h-full bg-gradient-to-r from-[#00E5FF] to-blue-500 rounded-full shadow-[0_0_12px_#00E5FF]"
-                />
+            ) : (
+              /* ── Single category grid ── */
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+                {filtered.map((tech, i) => (
+                  <TechCard key={tech.name} tech={tech} index={i} />
+                ))}
               </div>
-            </motion.div>
-          ))}
-        </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
       </div>
     </section>
+  );
+}
+
+/* ─── Individual Tech Card ─── */
+function TechCard({ tech, index }: { tech: typeof ALL_TECH[0]; index: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.88, y: 12 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.04, ease: 'easeOut' }}
+      className="group relative flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-white/8 bg-[#0C0C0C] hover:border-white/20 hover:bg-[#111] transition-all duration-300 cursor-default hover:scale-105 hover:shadow-lg"
+      style={{
+        '--glow-color': tech.color,
+      } as React.CSSProperties}
+    >
+      {/* Icon box */}
+      <div
+        className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl border transition-all duration-300 group-hover:scale-110"
+        style={{
+          background: tech.bg,
+          borderColor: `${tech.color}30`,
+          boxShadow: `0 0 0 0px ${tech.color}00`,
+        }}
+      >
+        <span>{tech.emoji}</span>
+      </div>
+
+      {/* Name */}
+      <span className="text-[11px] sm:text-xs font-semibold text-[#C0C0C0] group-hover:text-white transition-colors text-center leading-tight">
+        {tech.name}
+      </span>
+
+      {/* Bottom accent on hover */}
+      <div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-2/3 h-[2px] rounded-full transition-all duration-300"
+        style={{ background: tech.color }}
+      />
+    </motion.div>
   );
 }

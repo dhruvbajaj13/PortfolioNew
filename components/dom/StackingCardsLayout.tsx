@@ -40,12 +40,8 @@ export function StackingCardsLayout({
     },
     {
       id: 'tech',
-      component: (
-        <ActTechStack
-          selectedTech={selectedTech}
-          setSelectedTech={setSelectedTech}
-        />
-      ),
+      component: <ActTechStack />,
+
       bg: 'bg-[#070914]/95 border border-blue-500/20 shadow-[0_-25px_60px_rgba(0,102,255,0.15)]',
     },
     {
