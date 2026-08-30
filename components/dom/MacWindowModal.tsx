@@ -14,8 +14,10 @@ import {
   Layers,
   Sparkles,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
-import { PROJECTS, ProjectItem } from './ActProjects';
+import { PROJECTS_DATA, ProjectItem } from './ActProjects';
 
 export function MacWindowModal({
   project,
@@ -25,6 +27,10 @@ export function MacWindowModal({
   onClose: () => void;
 }) {
   const [activeTab, setActiveTab] = useState<'overview' | 'tech' | 'architecture' | 'terminal'>('overview');
+  const total = PROJECTS_DATA.length;
+  const currentIndex = PROJECTS_DATA.findIndex((p) => p.id === project.id);
+  const prevProj = PROJECTS_DATA[(currentIndex - 1 + total) % total];
+  const nextProj = PROJECTS_DATA[(currentIndex + 1) % total];
 
   return (
     <AnimatePresence>
@@ -38,10 +44,10 @@ export function MacWindowModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="relative w-full max-w-4xl max-h-[78vh] rounded-3xl glass-panel border border-[#00E5FF]/40 shadow-[0_0_60px_rgba(0,229,255,0.2)] bg-[#080808] flex flex-col overflow-hidden z-10"
+          className="relative w-full max-w-4xl max-h-[78vh] rounded-3xl glass-panel border border-[#FFFFFF]/40 shadow-[0_0_60px_rgba(255,255,255,0.2)] bg-[#0A0A0A] flex flex-col overflow-hidden z-10"
         >
           {/* macOS Title Bar */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#050505] shrink-0">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#030303] shrink-0">
             <div className="flex items-center gap-2">
               <button
                 onClick={onClose}
@@ -69,7 +75,7 @@ export function MacWindowModal({
           >
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-5">
               <div>
-                <span className="font-mono text-xs font-bold text-[#00E5FF] uppercase tracking-wider block mb-1">
+                <span className="font-mono text-xs font-bold text-[#FFFFFF] uppercase tracking-wider block mb-1">
                   {project.category}
                 </span>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-white">
@@ -82,7 +88,7 @@ export function MacWindowModal({
                   href={project.liveDemo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-full bg-[#00E5FF] font-sans text-xs font-bold text-black shadow-[0_0_15px_rgba(0,229,255,0.4)] hover:scale-105 transition-all flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-full bg-[#FFFFFF] font-sans text-xs font-bold text-black shadow-[0_0_15px_rgba(255,255,255,0.4)] hover:scale-105 transition-all flex items-center gap-1.5"
                 >
                   <span>LIVE DEMO</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -92,19 +98,19 @@ export function MacWindowModal({
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-full glass-panel border border-white/10 font-sans text-xs font-bold text-white hover:border-[#00E5FF] hover:scale-105 transition-all flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-full glass-panel border border-white/10 font-sans text-xs font-bold text-white hover:border-[#FFFFFF] hover:scale-105 transition-all flex items-center gap-1.5"
                 >
                   <span>VIEW SOURCE</span>
-                  <Github className="w-3.5 h-3.5 text-[#00E5FF]" />
+                  <Github className="w-3.5 h-3.5 text-[#FFFFFF]" />
                 </a>
               </div>
             </div>
 
-            <p className="font-sans text-sm sm:text-base text-slate-200 leading-relaxed italic border-l-2 border-[#00E5FF] pl-4">
+            <p className="font-sans text-sm sm:text-base text-slate-200 leading-relaxed italic border-l-2 border-[#FFFFFF] pl-4">
               "{project.tagline}"
             </p>
 
-            <div className="p-5 rounded-2xl bg-[#050505] border border-white/10 space-y-2">
+            <div className="p-5 rounded-2xl bg-[#030303] border border-white/10 space-y-2">
               <span className="font-mono text-xs font-bold text-red-400 block uppercase">
                 &gt; PROBLEM_STATEMENT
               </span>
@@ -113,7 +119,7 @@ export function MacWindowModal({
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#050505] border border-emerald-500/40 text-emerald-100 space-y-2">
+            <div className="p-5 rounded-2xl bg-[#030303] border border-emerald-500/40 text-emerald-100 space-y-2">
               <span className="font-mono text-xs font-bold text-emerald-400 block uppercase">
                 &gt; ENGINEERED_SOLUTION
               </span>
@@ -123,16 +129,16 @@ export function MacWindowModal({
             </div>
 
             <div className="space-y-3">
-              <span className="font-mono text-xs font-bold text-[#00E5FF] block uppercase">
+              <span className="font-mono text-xs font-bold text-[#FFFFFF] block uppercase">
                 &gt; KEY_SYSTEM_FEATURES
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {project.features.map((feat, fIdx) => (
                   <div
                     key={fIdx}
-                    className="p-4 rounded-xl bg-[#050505] border border-white/10 flex items-start gap-2.5"
+                    className="p-4 rounded-xl bg-[#030303] border border-white/10 flex items-start gap-2.5"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-[#00E5FF] shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
                     <span className="font-sans text-xs sm:text-sm text-slate-200 leading-relaxed">
                       {feat}
                     </span>
@@ -142,14 +148,14 @@ export function MacWindowModal({
             </div>
 
             <div className="space-y-3">
-              <span className="font-mono text-xs font-bold text-[#00E5FF] block uppercase">
+              <span className="font-mono text-xs font-bold text-[#FFFFFF] block uppercase">
                 &gt; TECH_STACK_MANIFEST
               </span>
               <div className="flex flex-wrap gap-2">
                 {project.techStack.map((t) => (
                   <span
                     key={t}
-                    className="font-mono text-xs px-3.5 py-1.5 rounded-full bg-[#050505] border border-white/10 text-[#00E5FF]"
+                    className="font-mono text-xs px-3.5 py-1.5 rounded-full bg-[#030303] border border-white/10 text-[#FFFFFF]"
                   >
                     {t}
                   </span>
@@ -157,8 +163,8 @@ export function MacWindowModal({
               </div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#050505] border border-[#00E5FF]/50 text-cyan-200 space-y-1">
-              <span className="font-mono text-xs font-bold text-[#00E5FF] block uppercase">
+            <div className="p-5 rounded-2xl bg-[#030303] border border-[#FFFFFF]/50 text-cyan-200 space-y-1">
+              <span className="font-mono text-xs font-bold text-[#FFFFFF] block uppercase">
                 &gt; MEASURABLE_IMPACT
               </span>
               <p className="font-sans text-xs sm:text-sm font-semibold text-white">

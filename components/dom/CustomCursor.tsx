@@ -45,32 +45,30 @@ export function CustomCursor() {
 
   return (
     <>
-      {/* Outer Cyan Ring Halo */}
+      {/* Outer Sleek White Ring */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-50 rounded-full border border-cyan-400/60 mix-blend-screen"
+        className="fixed top-0 left-0 pointer-events-none z-50 rounded-full border border-white/20 mix-blend-difference"
         animate={{
-          x: position.x - (isHovered ? 24 : 16),
-          y: position.y - (isHovered ? 24 : 16),
-          width: isHovered ? 48 : 32,
-          height: isHovered ? 48 : 32,
-          scale: isClicked ? 0.7 : 1,
-          backgroundColor: isHovered ? 'rgba(0, 240, 255, 0.15)' : 'rgba(0, 0, 0, 0)',
+          x: position.x - (isHovered ? 20 : 12),
+          y: position.y - (isHovered ? 20 : 12),
+          width: isHovered ? 40 : 24,
+          height: isHovered ? 40 : 24,
+          scale: isClicked ? 0.8 : 1,
+          backgroundColor: isHovered ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0)',
+          borderColor: isHovered ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.2)',
         }}
-        transition={{ type: 'spring', damping: 25, stiffness: 250, mass: 0.5 }}
-        style={{
-          boxShadow: isHovered ? '0 0 25px rgba(0, 240, 255, 0.6)' : '0 0 10px rgba(0, 240, 255, 0.2)',
-        }}
+        transition={{ type: 'spring', damping: 28, stiffness: 300, mass: 0.4 }}
       />
 
-      {/* Inner Glowing Center Core Dot */}
+      {/* Inner Classic Center Dot */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-50 w-2 h-2 bg-cyan-300 rounded-full shadow-[0_0_12px_#00f0ff]"
+        className="fixed top-0 left-0 pointer-events-none z-50 w-1.5 h-1.5 bg-white rounded-full mix-blend-difference"
         animate={{
-          x: position.x - 4,
-          y: position.y - 4,
-          scale: isHovered ? 1.5 : 1,
+          x: position.x - 3,
+          y: position.y - 3,
+          scale: isHovered ? 1.4 : 1,
         }}
-        transition={{ type: 'spring', damping: 30, stiffness: 400, mass: 0.1 }}
+        transition={{ type: 'spring', damping: 30, stiffness: 500, mass: 0.1 }}
       />
     </>
   );

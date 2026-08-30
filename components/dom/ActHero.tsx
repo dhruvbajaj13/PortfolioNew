@@ -3,132 +3,81 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Linkedin, Mail, ArrowDown, ExternalLink, Download } from 'lucide-react';
-import * as THREE from 'three';
 
-// 3D Moving Geometric Wireframe Polygons + Particles Background (Matching User Screenshot)
-const Hero3DGeometricBackground = () => {
-  const mountRef = useRef<HTMLDivElement>(null);
+// Minimal floating white particles — no neon, no cyan, no shapes
+const HeroParticleBackground = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    let animId: number;
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.z = 6;
+    const N = 90;
+    type Dot = { x: number; y: number; vx: number; vy: number; r: number; a: number };
+    const dots: Dot[] = Array.from({ length: N }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      r: Math.random() * 1.6 + 0.4,
+      a: Math.random() * 0.4 + 0.15,
+    }));
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    const maxDist = 140;
 
-    // 1. Spinning 3D Wireframe Icosahedron (Left)
-    const icoGeo1 = new THREE.IcosahedronGeometry(1.6, 1);
-    const icoMat1 = new THREE.MeshBasicMaterial({
-      color: 0x00e5ff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.18,
-    });
-    const icoMesh1 = new THREE.Mesh(icoGeo1, icoMat1);
-    icoMesh1.position.set(-3.5, 0.5, -2);
-    scene.add(icoMesh1);
-
-    // 2. Spinning 3D Wireframe Icosahedron (Right)
-    const icoGeo2 = new THREE.IcosahedronGeometry(2.2, 1);
-    const icoMat2 = new THREE.MeshBasicMaterial({
-      color: 0x00e5ff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.22,
-    });
-    const icoMesh2 = new THREE.Mesh(icoGeo2, icoMat2);
-    icoMesh2.position.set(3.8, -0.2, -3);
-    scene.add(icoMesh2);
-
-    // 3. Floating Particle Field
-    const particleCount = 600;
-    const particleGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    const cyan = new THREE.Color(0x00e5ff);
-    const white = new THREE.Color(0xffffff);
-
-    for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 16;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
-
-      const c = Math.random() > 0.5 ? cyan : white;
-      colors[i * 3] = c.r;
-      colors[i * 3 + 1] = c.g;
-      colors[i * 3 + 2] = c.b;
-    }
-
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const particleMat = new THREE.PointsMaterial({
-      size: 0.035,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.65,
-      blending: THREE.AdditiveBlending,
-    });
-
-    const particles = new THREE.Points(particleGeo, particleMat);
-    scene.add(particles);
-
-    // Animation Loop
-    let animationFrameId: number;
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
-
-      icoMesh1.rotation.y += 0.003;
-      icoMesh1.rotation.x += 0.002;
-
-      icoMesh2.rotation.y -= 0.0025;
-      icoMesh2.rotation.x -= 0.0015;
-
-      particles.rotation.y += 0.0006;
-      particles.rotation.x += 0.0003;
-
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationFrameId);
-      if (container && renderer.domElement) {
-        container.removeChild(renderer.domElement);
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      // Draw connecting lines
+      for (let i = 0; i < N; i++) {
+        for (let j = i + 1; j < N; j++) {
+          const dx = dots[i].x - dots[j].x;
+          const dy = dots[i].y - dots[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < maxDist) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(255,255,255,${0.08 * (1 - dist / maxDist)})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(dots[i].x, dots[i].y);
+            ctx.lineTo(dots[j].x, dots[j].y);
+            ctx.stroke();
+          }
+        }
       }
-      icoGeo1.dispose();
-      icoMat1.dispose();
-      icoGeo2.dispose();
-      icoMat2.dispose();
-      particleGeo.dispose();
-      particleMat.dispose();
-      renderer.dispose();
+      // Draw dots
+      for (const d of dots) {
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${d.a})`;
+        ctx.fill();
+        d.x += d.vx;
+        d.y += d.vy;
+        if (d.x < 0 || d.x > w) d.vx *= -1;
+        if (d.y < 0 || d.y > h) d.vy *= -1;
+      }
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+
+    const onResize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
-  return <div ref={mountRef} className="absolute inset-0 z-0 pointer-events-none opacity-80" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none opacity-60" />;
 };
+
 
 // Roles for Typewriter Text Loop
 const ROLES = [
@@ -186,11 +135,11 @@ export function ActHero({
       id="hero"
       className="relative w-full min-h-screen flex flex-col justify-between px-4 sm:px-8 md:px-16 pt-28 sm:pt-36 pb-12 overflow-hidden pointer-events-none z-10 bg-[#050505]"
     >
-      {/* 3D Geometric Wireframe Background */}
-      <Hero3DGeometricBackground />
+      {/* Minimal Particle Background */}
+      <HeroParticleBackground />
 
       {/* Volumetric Radial Ambient Lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.12)_0%,transparent_70%)] blur-[160px] pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0%,transparent_70%)] blur-[160px] pointer-events-none z-0" />
 
       {/* Main Hero Content Layout */}
       <div className="max-w-4xl mx-auto w-full my-auto space-y-8 pt-4 text-center relative z-10">
@@ -214,7 +163,7 @@ export function ActHero({
             transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="font-display text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-white leading-tight"
           >
-            Dhruv <span className="text-[#00E5FF]">Bajaj</span>
+            Dhruv <span className="text-[#FFFFFF]">Bajaj</span>
           </motion.h1>
 
           {/* Typewriter Dynamic Role Subtitle */}
@@ -226,7 +175,7 @@ export function ActHero({
           >
             <span className="font-display text-lg sm:text-2xl font-semibold text-white tracking-wide">
               {currentText}
-              <span className="text-[#00E5FF] animate-pulse ml-0.5">|</span>
+              <span className="text-[#FFFFFF] animate-pulse ml-0.5">|</span>
             </span>
           </motion.div>
         </div>
@@ -251,7 +200,7 @@ export function ActHero({
           {/* Primary CTA: View My Work ↗ */}
           <a
             href="#projects"
-            className="px-8 py-3.5 rounded-2xl bg-[#00E5FF] font-sans text-sm font-bold text-black shadow-[0_0_25px_rgba(0,229,255,0.4)] hover:shadow-[0_0_40px_rgba(0,229,255,0.7)] hover:scale-105 transition-all duration-300 flex items-center gap-2"
+            className="px-8 py-3.5 rounded-2xl bg-[#FFFFFF] font-sans text-sm font-bold text-black shadow-[0_0_25px_rgba(255,255,255,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.7)] hover:scale-105 transition-all duration-300 flex items-center gap-2"
           >
             <span>View My Work</span>
             <ExternalLink className="w-4 h-4" />
@@ -262,9 +211,9 @@ export function ActHero({
             href={RESUME_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3.5 rounded-2xl glass-panel border border-white/10 text-white font-sans text-sm font-bold hover:border-[#00E5FF]/60 hover:scale-105 transition-all duration-300 flex items-center gap-2 shadow-lg bg-[#080808]"
+            className="px-8 py-3.5 rounded-2xl glass-panel border border-white/10 text-white font-sans text-sm font-bold hover:border-[#FFFFFF]/60 hover:scale-105 transition-all duration-300 flex items-center gap-2 shadow-lg bg-[#080808]"
           >
-            <Download className="w-4 h-4 text-[#00E5FF]" />
+            <Download className="w-4 h-4 text-[#FFFFFF]" />
             <span>Download Résumé</span>
           </a>
         </motion.div>
@@ -280,7 +229,7 @@ export function ActHero({
             href="https://github.com/dhruvbajaj13"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#00E5FF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
+            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
             aria-label="GitHub"
           >
             <Github className="w-4 h-4" />
@@ -289,14 +238,14 @@ export function ActHero({
             href="https://www.linkedin.com/in/dhruvbajaj13"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#00E5FF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
+            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
             aria-label="LinkedIn"
           >
             <Linkedin className="w-4 h-4" />
           </a>
           <a
             href="mailto:d4bajaj@gmail.com"
-            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#00E5FF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
+            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
             aria-label="Email"
           >
             <Mail className="w-4 h-4" />
@@ -312,7 +261,7 @@ export function ActHero({
         >
           <div className="inline-flex flex-row items-center justify-center gap-8 sm:gap-14 px-8 py-5 rounded-3xl glass-panel border border-white/10 bg-[#080808]/90 shadow-2xl backdrop-blur-xl">
             <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#00E5FF]">10+</div>
+              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">10+</div>
               <div className="font-mono text-[11px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">Projects Shipped</div>
             </div>
 
@@ -326,7 +275,7 @@ export function ActHero({
             <div className="w-px h-8 bg-white/10" />
 
             <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#00E5FF]">2027</div>
+              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">2027</div>
               <div className="font-mono text-[11px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">Graduating</div>
             </div>
           </div>
@@ -343,9 +292,9 @@ export function ActHero({
       >
         <button
           onClick={scrollToNext}
-          className="pointer-events-auto p-2.5 rounded-full glass-panel border border-white/10 text-[#A8A8A8] hover:text-[#00E5FF] hover:border-[#00E5FF]/60 transition-colors bg-[#080808]"
+          className="pointer-events-auto p-2.5 rounded-full glass-panel border border-white/10 text-[#A8A8A8] hover:text-[#FFFFFF] hover:border-[#FFFFFF]/60 transition-colors bg-[#080808]"
         >
-          <ArrowDown className="w-4 h-4 animate-bounce text-[#00E5FF]" />
+          <ArrowDown className="w-4 h-4 animate-bounce text-[#FFFFFF]" />
         </button>
       </motion.div>
     </section>

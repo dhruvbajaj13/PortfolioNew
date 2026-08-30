@@ -57,27 +57,27 @@ export function ActContact() {
     {
       label: 'GitHub',
       href: 'https://github.com/dhruvbajaj13',
-      icon: <Github className="w-7 h-7 text-white group-hover:text-[#00E5FF] transition-colors" />,
+      icon: <Github className="w-7 h-7 text-white transition-transform duration-300 group-hover:scale-105" />,
     },
     {
       label: 'LinkedIn',
       href: 'https://www.linkedin.com/in/dhruvbajaj13',
-      icon: <Linkedin className="w-7 h-7 text-[#0A66C2] group-hover:scale-110 transition-transform" />,
+      icon: <Linkedin className="w-7 h-7 text-[#0077B5] transition-transform duration-300 group-hover:scale-110" />,
     },
     {
       label: 'X',
       href: 'https://x.com/DhruvBajaj43391',
-      icon: <XIcon className="w-6 h-6 text-white group-hover:text-[#00E5FF] transition-colors" />,
+      icon: <XIcon className="w-6 h-6 text-white transition-transform duration-300 group-hover:scale-105" />,
     },
     {
       label: 'Instagram',
       href: 'https://www.instagram.com/dhruvvv_1307',
-      icon: <Instagram className="w-7 h-7 text-[#E4405F] group-hover:scale-110 transition-transform" />,
+      icon: <Instagram className="w-7 h-7 text-[#E4405F] transition-transform duration-300 group-hover:scale-110" />,
     },
     {
       label: 'Discord',
       href: 'https://discord.com/invite/8PcMKtM6',
-      icon: <DiscordIcon className="w-7 h-7 text-[#5865F2] group-hover:scale-110 transition-transform" />,
+      icon: <DiscordIcon className="w-7 h-7 text-[#5865F2] transition-transform duration-300 group-hover:scale-110" />,
     },
   ];
 
@@ -95,9 +95,9 @@ export function ActContact() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.2 }}
             viewport={{ once: true }}
-            className="font-display text-4xl sm:text-6xl font-extrabold text-white tracking-tight"
+            className="font-display text-4xl sm:text-6xl font-extrabold text-white tracking-tight uppercase"
           >
-            Get in <span className="text-[#00E5FF]">Touch</span>
+            Get in <span className="text-white">Touch</span>
           </motion.h2>
 
           <motion.p
@@ -117,20 +117,20 @@ export function ActContact() {
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}
           viewport={{ once: true }}
-          className="rounded-3xl glass-panel border border-white/10 hover:border-[#00E5FF]/40 p-6 md:p-10 pointer-events-auto shadow-[0_20px_60px_rgba(0,0,0,0.9)] bg-[#080808]"
+          className="rounded-3xl glass-panel border border-white/10 hover:border-white/30 p-6 md:p-10 pointer-events-auto shadow-[0_20px_60px_rgba(0,0,0,0.9)] bg-[#080808]"
         >
           {/* Terminal Window Bar */}
           <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-8">
             <div className="flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded-full bg-red-500/90 shadow-[0_0_8px_#ff5f56]" />
-              <div className="w-3.5 h-3.5 rounded-full bg-yellow-500/90" />
-              <div className="w-3.5 h-3.5 rounded-full bg-green-500/90" />
+              <div className="w-3.5 h-3.5 rounded-full bg-white/20 shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
+              <div className="w-3.5 h-3.5 rounded-full bg-white/10" />
+              <div className="w-3.5 h-3.5 rounded-full bg-white/5" />
               <span className="ml-3 font-mono text-xs text-[#A8A8A8] hidden sm:inline-block">
                 dhruvbajaj.dev@quantum-terminal:~$
               </span>
             </div>
-            <div className="font-mono text-xs text-[#00E5FF] flex items-center gap-2 font-bold tracking-wider">
-              <Terminal className="w-3.5 h-3.5 text-[#00E5FF]" />
+            <div className="font-mono text-xs text-white flex items-center gap-2 font-bold tracking-wider">
+              <Terminal className="w-3.5 h-3.5 text-white" />
               <span>ENCRYPTED CHANNEL</span>
             </div>
           </div>
@@ -156,7 +156,7 @@ export function ActContact() {
                       placeholder="e.g. John Doe"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-5 py-4 rounded-xl bg-[#050505] border border-white/10 text-white font-sans text-sm focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all shadow-inner placeholder:text-[#A8A8A8]/50"
+                      className="w-full px-5 py-4 rounded-xl bg-[#050505] border border-white/10 text-white font-sans text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner placeholder:text-[#A8A8A8]/50"
                     />
                   </div>
 
@@ -170,7 +170,7 @@ export function ActContact() {
                       placeholder="satoshi@network.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-5 py-4 rounded-xl bg-[#050505] border border-white/10 text-white font-sans text-sm focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all shadow-inner placeholder:text-[#A8A8A8]/50"
+                      className="w-full px-5 py-4 rounded-xl bg-[#050505] border border-white/10 text-white font-sans text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner placeholder:text-[#A8A8A8]/50"
                     />
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export function ActContact() {
                     placeholder="Tell me about your spatial web project, vision, or architectural requirements..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-5 py-4 rounded-xl bg-[#050505] border border-white/10 text-white font-sans text-sm focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all shadow-inner placeholder:text-[#A8A8A8]/50"
+                    className="w-full px-5 py-4 rounded-xl bg-[#050505] border border-white/10 text-white font-sans text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner placeholder:text-[#A8A8A8]/50"
                   />
                 </div>
 
@@ -194,7 +194,7 @@ export function ActContact() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-8 py-4 rounded-full bg-[#00E5FF] font-sans text-sm font-bold text-black shadow-[0_0_25px_rgba(0,229,255,0.4)] hover:shadow-[0_0_40px_rgba(0,229,255,0.7)] hover:scale-105 transition-all duration-300 flex items-center gap-2.5"
+                    className="px-8 py-4 rounded-full bg-white font-sans text-sm font-bold text-black shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] hover:scale-105 transition-all duration-300 flex items-center gap-2.5"
                   >
                     <span>{isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}</span>
                     <Send className={`w-4 h-4 ${isSubmitting ? 'animate-bounce' : ''}`} />
@@ -208,7 +208,7 @@ export function ActContact() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-12 space-y-4"
               >
-                <div className="w-16 h-16 rounded-full bg-[#00E5FF]/20 border border-[#00E5FF] flex items-center justify-center mx-auto text-[#00E5FF] shadow-[0_0_30px_rgba(0,229,255,0.5)]">
+                <div className="w-16 h-16 rounded-full bg-white/10 border border-white/30 flex items-center justify-center mx-auto text-white shadow-[0_0_30px_rgba(255,255,255,0.2)]">
                   <CheckCircle className="w-8 h-8" />
                 </div>
                 <h3 className="font-display text-3xl font-bold text-white">
@@ -222,7 +222,7 @@ export function ActContact() {
                     setIsSubmitted(false);
                     setFormData({ name: '', email: '', message: '' });
                   }}
-                  className="font-mono text-xs text-[#00E5FF] underline pt-4 block mx-auto hover:text-white"
+                  className="font-mono text-xs text-white underline pt-4 block mx-auto hover:text-white/80"
                 >
                   [ SEND ANOTHER MESSAGE ]
                 </button>
@@ -234,7 +234,7 @@ export function ActContact() {
         {/* Quick Email Copy Card */}
         <div className="mt-8 flex items-center justify-center pointer-events-auto">
           <div className="px-6 py-4 rounded-2xl bg-[#080808] border border-white/10 flex items-center gap-4 shadow-xl">
-            <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
+            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white">
               <Mail className="w-5 h-5" />
             </div>
 
@@ -249,7 +249,7 @@ export function ActContact() {
 
             <button
               onClick={handleCopyEmail}
-              className="ml-4 px-3.5 py-1.5 rounded-lg bg-[#050505] border border-white/10 font-mono text-xs font-semibold text-[#00E5FF] hover:border-[#00E5FF] hover:text-white transition-colors flex items-center gap-1.5"
+              className="ml-4 px-3.5 py-1.5 rounded-lg bg-[#050505] border border-white/10 font-mono text-xs font-semibold text-white hover:border-white hover:text-white/80 transition-colors flex items-center gap-1.5"
             >
               {copiedEmail ? (
                 <>
@@ -278,7 +278,7 @@ export function ActContact() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               viewport={{ once: true }}
-              className="relative overflow-hidden group p-6 rounded-2xl glass-panel border border-white/10 hover:border-[#00E5FF]/60 flex flex-col items-center justify-center gap-3 transition-all duration-300 shadow-xl bg-[#080808] hover:scale-105"
+              className="relative overflow-hidden group p-6 rounded-2xl glass-panel border border-white/10 hover:border-white/40 hover:bg-white/[0.08] flex flex-col items-center justify-center gap-3 transition-all duration-300 shadow-xl bg-[#080808] hover:scale-105"
             >
               <div className="relative z-10 flex flex-col items-center gap-2.5">
                 {card.icon}

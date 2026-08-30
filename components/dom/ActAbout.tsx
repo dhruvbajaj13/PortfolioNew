@@ -2,113 +2,114 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, MapPin } from 'lucide-react';
+
+const STATS = [
+  { value: '10+', label: 'Projects Shipped' },
+  { value: '3+', label: 'Internships' },
+  { value: '1000+', label: 'Problems Solved' },
+  { value: '2027', label: 'Graduating' },
+];
 
 export function ActAbout() {
   return (
     <section
       id="about"
-      className="relative w-full flex flex-col justify-center px-4 sm:px-8 md:px-16 py-16 md:py-24 overflow-hidden pointer-events-none bg-[#050505]"
+      className="relative w-full px-4 sm:px-8 md:px-16 py-24 md:py-32 bg-[#050505]"
     >
-      <div className="max-w-6xl mx-auto w-full space-y-12">
-        
-        {/* Section Header */}
-        <div className="text-center space-y-3 pointer-events-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="font-display text-4xl sm:text-6xl font-extrabold text-white tracking-tight"
-          >
-            About <span className="text-[#00E5FF]">Me</span>
-          </motion.h2>
+      <div className="max-w-6xl mx-auto">
 
+        {/* Header — same massive style as Experience */}
+        <div className="mb-16 md:mb-20">
           <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-mono text-xs tracking-[0.25em] text-white/40 uppercase mb-4"
+          >
+            — Who I Am —
+          </motion.p>
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.3 }}
             viewport={{ once: true }}
-            className="font-display text-base sm:text-xl font-medium text-[#A8A8A8] tracking-wide max-w-2xl mx-auto"
+            className="font-display text-5xl sm:text-7xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none"
           >
-            Passionate Full-Stack & AI Engineer pursuing ECE at NSUT
-          </motion.p>
+            About Me
+          </motion.h2>
         </div>
 
-        {/* Content Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pointer-events-auto">
-          
-          {/* Left Column: Profile Avatar Frame (Perfect Circle) */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="lg:col-span-4 flex justify-center"
-          >
-            <div className="relative group">
-              {/* Outer Cyan Ring Glow */}
-              <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-[#00E5FF] via-blue-500 to-[#00E5FF] opacity-40 group-hover:opacity-100 blur-lg transition duration-700 animate-pulse" />
+        {/* Two-column layout — same as Experience */}
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-stretch">
 
-              {/* Circular Avatar Container */}
-              <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden border-2 border-white/20 shadow-2xl bg-[#080808]">
-                <img
-                  src="/images/dhruv_profile.jpg"
-                  alt="Dhruv Bajaj"
-                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                />
+          {/* Left — profile photo */}
+          <div className="w-full lg:w-[38%] flex justify-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="relative w-full aspect-square max-w-[280px] lg:max-w-[320px] rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02] group shadow-2xl"
+            >
+              <img
+                src="/images/dhruv_profile.jpg"
+                alt="Dhruv Bajaj"
+                className="w-full h-full object-cover opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+              />
+            </motion.div>
+          </div>
+
+          {/* Right — detail panel (like the Experience detail panel) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex-1 w-full rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10 flex flex-col justify-between gap-8"
+          >
+            {/* Bio text */}
+            <div className="pb-6 border-b border-white/10">
+              <h3 className="font-display font-black text-white text-2xl md:text-3xl tracking-tight mb-4">
+                Dhruv Bajaj
+              </h3>
+              <div className="flex flex-col gap-4 text-white/60 text-sm md:text-base leading-relaxed font-light">
+                <p>
+                  I'm a <span className="text-white font-medium">3rd-year B.Tech student</span> at{' '}
+                  <span className="text-white font-medium">NSUT, New Delhi</span>, specialising in Electronics &amp; Communication Engineering with an IoT focus.
+                </p>
+                <p>
+                  I build production-grade web applications and AI systems — from responsive React frontends to scalable REST APIs and autonomous RAG-driven AI agents. I thrive at the intersection of clean engineering and striking user experiences.
+                </p>
+                <p>
+                  Beyond software, I actively compete in algorithmic problem solving and am currently a{' '}
+                  <span className="text-white font-medium">LeetCode Knight</span> with a peak rating of 1933.
+                </p>
               </div>
             </div>
-          </motion.div>
 
-          {/* Right Column: Bio Details Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            viewport={{ once: true }}
-            className="lg:col-span-8 space-y-6"
-          >
-            <div className="p-8 sm:p-10 rounded-3xl glass-panel border border-white/10 shadow-2xl bg-[#080808] space-y-6">
-              
-              <div className="space-y-4 font-sans text-sm sm:text-base text-[#A8A8A8] leading-relaxed">
-                <p>
-                  I am a <strong className="text-white font-medium">3rd-year B.Tech student</strong> at <strong className="text-white font-medium">Netaji Subhas University of Technology (NSUT), New Delhi</strong>, specializing in Electronics & Communication Engineering (ECE) with an IoT focus (Graduating 2027).
-                </p>
-
-                <p>
-                  I build production-grade web applications and AI systems using <strong className="text-white font-medium">React, Next.js, Node.js, Express, Java, and Python</strong>. My passion lies in creating responsive UI experiences, scalable backend REST APIs, and intelligent RAG-driven AI workflows.
-                </p>
-
-                <p>
-                  Beyond software development, I actively engage in problem-solving and algorithmic challenges across competitive programming platforms.
-                </p>
-              </div>
-
-              {/* Details Key Metrics */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-white/10 pt-6">
-                <div className="flex items-center gap-3">
-                  <GraduationCap className="w-5 h-5 text-[#00E5FF] shrink-0" />
-                  <div>
-                    <span className="font-mono text-xs text-[#A8A8A8] block">DEGREE & COLLEGE</span>
-                    <span className="font-sans text-sm font-semibold text-white">B.Tech ECE @ NSUT (2027)</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-[#00E5FF] shrink-0" />
-                  <div>
-                    <span className="font-mono text-xs text-[#A8A8A8] block">LOCATION</span>
-                    <span className="font-sans text-sm font-semibold text-white">New Delhi, India</span>
-                  </div>
-                </div>
-              </div>
-
+            {/* Stats row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {STATS.map((s, i) => (
+                <motion.div
+                  key={s.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.3 + i * 0.07 }}
+                  className="flex flex-col gap-1 p-4 rounded-xl border border-white/8 bg-white/[0.02]"
+                >
+                  <span className="font-display font-black text-white text-2xl md:text-3xl tracking-tight">
+                    {s.value}
+                  </span>
+                  <span className="font-mono text-[10px] tracking-widest text-white/40 uppercase">
+                    {s.label}
+                  </span>
+                </motion.div>
+              ))}
             </div>
+
           </motion.div>
 
         </div>
-
       </div>
     </section>
   );

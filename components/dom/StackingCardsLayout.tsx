@@ -46,12 +46,7 @@ export function StackingCardsLayout({
     },
     {
       id: 'projects',
-      component: (
-        <ActProjects
-          activeProjectIndex={activeProjectIndex}
-          setActiveProjectIndex={setActiveProjectIndex}
-        />
-      ),
+      component: <ActProjects />,
       bg: 'bg-[#0a0816]/95 border border-cyan-400/30 shadow-[0_-30px_70px_rgba(0,240,255,0.2)]',
     },
     {

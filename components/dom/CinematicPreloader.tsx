@@ -146,14 +146,14 @@ export function CinematicPreloader({ onComplete }: { onComplete: () => void }) {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.04, transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] } }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-between py-12 px-6 bg-[#050505] text-white overflow-hidden"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-between py-12 px-6 bg-[#030303] text-white overflow-hidden"
     >
       {/* Background Ambient Volumetric Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.12)_0%,rgba(8,8,8,0.8)_60%,#050505_100%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0%,rgba(8,8,8,0.8)_60%,#030303_100%)] pointer-events-none" />
 
       {/* Top Header Title */}
       <div className="z-10 text-center space-y-1 pt-4">
-        <span className="font-mono text-xs text-[#00E5FF] font-bold uppercase tracking-widest block">
+        <span className="font-mono text-xs text-[#FFFFFF] font-bold uppercase tracking-widest block">
           // THREE.JS / WEBGL 3D ENGINE
         </span>
         <h2 className="font-display font-black text-2xl text-white tracking-widest">
@@ -169,14 +169,14 @@ export function CinematicPreloader({ onComplete }: { onComplete: () => void }) {
       {/* Bottom Progress Bar Section */}
       <div className="z-10 w-full max-w-md text-center space-y-4 pb-4">
         {/* Status Message */}
-        <div className="font-mono text-xs font-bold text-[#00E5FF] tracking-widest">
+        <div className="font-mono text-xs font-bold text-[#FFFFFF] tracking-widest">
           {getStatusText(progress)}
         </div>
 
         {/* Energy Progress Bar */}
-        <div className="w-full h-2 rounded-full bg-[#080808] p-0.5 border border-white/10 overflow-hidden shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+        <div className="w-full h-2 rounded-full bg-[#0A0A0A] p-0.5 border border-white/10 overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.2)]">
           <motion.div
-            className="h-full bg-gradient-to-r from-[#00E5FF] via-blue-500 to-white rounded-full shadow-[0_0_15px_#00E5FF]"
+            className="h-full bg-gradient-to-r from-[#FFFFFF] via-blue-500 to-white rounded-full shadow-[0_0_15px_#FFFFFF]"
             style={{ width: `${Math.min(progress, 100)}%` }}
           />
         </div>
@@ -184,7 +184,7 @@ export function CinematicPreloader({ onComplete }: { onComplete: () => void }) {
         {/* Count-Up Percentage */}
         <div className="flex items-center justify-between font-mono text-xs font-bold px-1 text-[#A8A8A8]">
           <span>WEBGL 3D LOAD</span>
-          <span className="text-2xl font-black text-[#00E5FF] tracking-wider">
+          <span className="text-2xl font-black text-[#FFFFFF] tracking-wider">
             {Math.min(progress, 100)}%
           </span>
           <span>EST. 2027</span>

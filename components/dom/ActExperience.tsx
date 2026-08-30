@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Calendar, MapPin, Briefcase, CheckCircle2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight, MapPin, Calendar } from 'lucide-react';
 
 export interface ExperienceItem {
   id: string;
@@ -10,6 +10,7 @@ export interface ExperienceItem {
   company: string;
   location: string;
   duration: string;
+  year: string;
   bullets: string[];
   tech: string[];
   link?: string;
@@ -22,25 +23,27 @@ export const EXPERIENCES: ExperienceItem[] = [
     company: 'GOMed',
     location: 'Delhi, India · Hybrid',
     duration: 'May 2026 – July 2026',
+    year: '2026',
     bullets: [
-      'Developed and deployed 5+ production-ready full-stack features for a live healthcare platform serving 3,000+ active users and 500+ paid users.',
-      'Built and integrated 10+ REST API endpoints, resolved 20+ production issues, and optimized database queries for 30% faster load times.',
-      'Collaborated closely with a cross-functional team in an Agile environment across 6+ sprint feature releases.',
+      'Developed and deployed 5+ production-ready features for a live healthcare platform serving 3,000+ active users.',
+      'Built and integrated 10+ REST API endpoints, resolved 20+ production bugs, optimized DB queries for 30% faster load times.',
+      'Collaborated in Agile sprints across 6+ feature releases with a cross-functional team.',
     ],
-    tech: ['Java', 'Svelte', 'Node.js', 'REST APIs', 'Git', 'Agile'],
+    tech: ['Java', 'Svelte', 'Node.js', 'REST APIs', 'Git'],
     link: '#',
   },
   {
     id: 'gssoc',
     role: 'Open Source Contributor',
-    company: 'GirlScript Summer of Code (GSSoC)',
+    company: 'GirlScript Summer of Code',
     location: 'Remote',
     duration: 'June 2025 – Oct 2025',
+    year: '2025',
     bullets: [
-      'Contributed core pull requests to high-impact open-source web applications, implementing UI components and optimizing performance.',
-      'Participated in code reviews, bug fixes, and documentation improvements across multi-maintainer repositories.',
+      'Contributed core pull requests to high-impact open-source web apps, implementing UI components and optimizing performance.',
+      'Participated in code reviews, bug fixes, and documentation across multi-maintainer repositories.',
     ],
-    tech: ['React.js', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Git'],
+    tech: ['React.js', 'Next.js', 'TypeScript', 'Tailwind CSS'],
     link: '#',
   },
   {
@@ -49,6 +52,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     company: 'Nexel – Futurize the Innovation',
     location: 'Remote',
     duration: 'Jan 2025 – Feb 2025',
+    year: '2025',
     bullets: [
       'Designed and engineered responsive client interfaces, enhancing user engagement and accessibility.',
       'Optimized asset loading and state management for smoother client-side navigation.',
@@ -58,152 +62,137 @@ export const EXPERIENCES: ExperienceItem[] = [
   },
 ];
 
-export function ActExperience({
-  selectedExpIndex: externalIndex,
-  setSelectedExpIndex: externalSetIndex,
-}: {
-  selectedExpIndex?: number | null;
-  setSelectedExpIndex?: (idx: number | null) => void;
-}) {
-  const [internalIndex, setInternalIndex] = React.useState<number | null>(0);
-  const selectedExpIndex = externalIndex !== undefined ? externalIndex : internalIndex;
-  const setSelectedExpIndex = externalSetIndex !== undefined ? externalSetIndex : setInternalIndex;
+export function ActExperience() {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const active = EXPERIENCES[activeIdx];
 
   return (
     <section
       id="experience"
-      className="relative w-full flex flex-col justify-center px-4 sm:px-8 md:px-16 py-16 md:py-24 overflow-hidden pointer-events-none bg-[#050505]"
+      className="relative w-full px-4 sm:px-8 md:px-16 py-24 md:py-32 bg-[#050505]"
     >
-      <div className="max-w-4xl mx-auto w-full space-y-10">
-        
-        {/* Section Header */}
-        <div className="text-center space-y-3 pointer-events-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="font-display text-4xl sm:text-6xl font-extrabold text-white tracking-tight"
-          >
-            My <span className="text-[#00E5FF]">Experience</span>
-          </motion.h2>
+      <div className="max-w-6xl mx-auto">
 
+        {/* Header */}
+        <div className="mb-16 md:mb-20">
           <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-mono text-xs tracking-[0.25em] text-white/40 uppercase mb-4"
+          >
+            — Work Experience —
+          </motion.p>
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.3 }}
             viewport={{ once: true }}
-            className="font-display text-base sm:text-xl font-medium text-[#A8A8A8] tracking-wide max-w-2xl mx-auto"
+            className="font-display text-5xl sm:text-7xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none"
           >
-            Production engineering internships and open-source contributions
-          </motion.p>
+            Experience
+          </motion.h2>
         </div>
 
-        {/* Compact Connected Vertical Timeline Container */}
-        <div className="relative pl-8 sm:pl-12 space-y-6 pointer-events-auto group/timeline max-w-3xl mx-auto">
-          
-          {/* Vertical Timeline Track Bar */}
-          <div className="absolute left-3 sm:left-4 top-4 bottom-4 w-0.5 bg-gradient-to-b from-[#00E5FF] via-blue-500 to-[#00E5FF]/20 rounded-full shadow-[0_0_15px_#00E5FF]" />
+        {/* Main layout: Left list + Right detail panel */}
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
 
-          {EXPERIENCES.map((exp, idx) => {
-            const isSelected = selectedExpIndex === idx;
-
-            return (
-              <motion.div
+          {/* Left column – clickable role list */}
+          <div className="lg:w-[42%] flex flex-col gap-3">
+            {EXPERIENCES.map((exp, i) => (
+              <motion.button
                 key={exp.id}
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: idx * 0.12 }}
                 viewport={{ once: true }}
-                onClick={() => setSelectedExpIndex(idx)}
-                className={`relative overflow-hidden group p-5 sm:p-6 rounded-2xl glass-panel border transition-all duration-500 cursor-pointer shadow-[0_15px_40px_rgba(0,0,0,0.9)] bg-[#080808] backdrop-blur-xl group-hover/timeline:opacity-60 hover:!opacity-100 ${
-                  isSelected
-                    ? 'border-[#00E5FF] shadow-[0_0_35px_rgba(0,229,255,0.35)] scale-[1.01]'
-                    : 'border-white/10 hover:border-[#00E5FF]/60'
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                onClick={() => setActiveIdx(i)}
+                className={`group text-left w-full px-6 py-5 rounded-2xl border transition-all duration-300 flex justify-between items-start gap-4 ${
+                  activeIdx === i
+                    ? 'bg-white/5 border-white/30'
+                    : 'bg-white/[0.02] border-white/8 hover:border-white/20 hover:bg-white/[0.04]'
                 }`}
               >
-                {/* Interactive Timeline Node Dot */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedExpIndex(idx);
-                  }}
-                  aria-label={`Select ${exp.company} experience`}
-                  className={`absolute -left-[30px] sm:-left-[42px] top-6 w-5 h-5 rounded-full transition-all duration-500 flex items-center justify-center cursor-pointer ${
-                    isSelected
-                      ? 'bg-[#00E5FF] border-2 border-white shadow-[0_0_20px_#00E5FF] ring-4 ring-[#00E5FF]/30 scale-125 z-20'
-                      : 'bg-[#050505] border-2 border-white/20 hover:border-[#00E5FF] hover:scale-110'
-                  }`}
-                >
-                  {isSelected && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
-                  )}
-                </button>
+                <div className="flex flex-col gap-1 min-w-0">
+                  <span className={`font-mono text-[10px] tracking-widest uppercase transition-colors ${activeIdx === i ? 'text-white/50' : 'text-white/25 group-hover:text-white/40'}`}>
+                    {exp.year} · {exp.location}
+                  </span>
+                  <span className={`font-display font-bold text-lg md:text-xl tracking-tight transition-colors leading-tight ${activeIdx === i ? 'text-white' : 'text-white/50 group-hover:text-white/80'}`}>
+                    {exp.role}
+                  </span>
+                  <span className={`text-sm font-light transition-colors ${activeIdx === i ? 'text-white/70' : 'text-white/30 group-hover:text-white/50'}`}>
+                    {exp.company}
+                  </span>
+                </div>
 
-                {/* Card Content Layer */}
-                <div className="relative z-10 space-y-3.5">
-                  
-                  {/* Header Row: Role, Company & Timeline Pill */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
-                    <div>
-                      <h3
-                        className={`font-display text-lg sm:text-xl font-bold transition-colors ${
-                          isSelected ? 'text-[#00E5FF]' : 'text-white group-hover:text-[#00E5FF]'
-                        }`}
-                      >
-                        {exp.role}
-                      </h3>
-                      <h4 className="font-sans text-xs sm:text-sm font-semibold text-[#A8A8A8] group-hover:text-white mt-0.5 flex items-center gap-1.5">
-                        <Briefcase className="w-3.5 h-3.5 text-[#00E5FF]" />
-                        <span>{exp.company}</span>
-                      </h4>
+                {/* Active indicator line on right */}
+                <div className={`w-0.5 self-stretch rounded-full flex-shrink-0 transition-all duration-300 ${activeIdx === i ? 'bg-white' : 'bg-white/10'}`} />
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Right column – expanded detail */}
+          <div className="lg:flex-1 relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+                className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10 flex flex-col gap-7"
+              >
+                {/* Role header */}
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-white/10">
+                  <div>
+                    <h3 className="font-display font-black text-white text-2xl md:text-3xl tracking-tight mb-1">
+                      {active.role}
+                    </h3>
+                    <p className="text-white/60 font-light text-base">{active.company}</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    <div className="flex items-center gap-1.5 font-mono text-xs text-white/50">
+                      <Calendar className="w-3 h-3" />
+                      {active.duration}
                     </div>
-
-                    {/* Timeline Date Pill Badge */}
-                    <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#050505] border border-[#00E5FF]/40 font-mono text-[11px] font-bold text-[#00E5FF] shadow-[0_0_12px_rgba(0,229,255,0.2)] shrink-0 self-start sm:self-center">
-                      <Calendar className="w-3 h-3 text-[#00E5FF]" />
-                      <span>{exp.duration}</span>
+                    <div className="flex items-center gap-1.5 font-mono text-xs text-white/40">
+                      <MapPin className="w-3 h-3" />
+                      {active.location}
                     </div>
                   </div>
+                </div>
 
-                  {/* Location Tag */}
-                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-[#A8A8A8]">
-                    <MapPin className="w-3 h-3 text-[#00E5FF]" />
-                    <span>{exp.location}</span>
-                  </div>
+                {/* Bullets */}
+                <ul className="flex flex-col gap-3">
+                  {active.bullets.map((b, bi) => (
+                    <motion.li
+                      key={bi}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: bi * 0.08 }}
+                      className="flex items-start gap-3 text-sm md:text-base text-white/70 leading-relaxed"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/40 mt-2 shrink-0" />
+                      {b}
+                    </motion.li>
+                  ))}
+                </ul>
 
-                  {/* Bullet Points */}
-                  <ul className="space-y-2 pt-0.5">
-                    {exp.bullets.map((b, bIdx) => (
-                      <li
-                        key={bIdx}
-                        className="flex items-start gap-2.5 font-sans text-xs sm:text-sm text-[#A8A8A8] leading-relaxed group-hover:text-white"
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#00E5FF] shrink-0 mt-0.5" />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Tech Stack Pills */}
-                  <div className="flex flex-wrap gap-1.5 pt-2.5 border-t border-white/10">
-                    {exp.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="font-mono text-[11px] px-3 py-0.5 rounded-full bg-[#050505] border border-white/10 text-[#A8A8A8] group-hover:border-[#00E5FF]/40 group-hover:text-[#00E5FF] transition-colors"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
+                {/* Tech pills */}
+                <div className="mt-auto pt-6 border-t border-white/8 flex flex-wrap gap-2">
+                  {active.tech.map(t => (
+                    <span
+                      key={t}
+                      className="px-3 py-1 rounded-full border border-white/15 bg-white/5 font-mono text-xs text-white/60"
+                    >
+                      {t}
+                    </span>
+                  ))}
                 </div>
               </motion.div>
-            );
-          })}
-        </div>
+            </AnimatePresence>
+          </div>
 
+        </div>
       </div>
     </section>
   );

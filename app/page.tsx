@@ -2,11 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import dynamic from 'next/dynamic';
 
 import { useLenis } from '@/hooks/useLenis';
-import { useMousePosition } from '@/hooks/useMousePosition';
-
 import { CustomCursor } from '@/components/dom/CustomCursor';
 import { CinematicPreloader } from '@/components/dom/CinematicPreloader';
 import { Navigation } from '@/components/dom/Navigation';
@@ -18,25 +15,16 @@ import { ActTechStack } from '@/components/dom/ActTechStack';
 import { ActProjects } from '@/components/dom/ActProjects';
 import { ActCPStats } from '@/components/dom/ActCPStats';
 import { ActContact } from '@/components/dom/ActContact';
-
-const CosmicGalaxyCanvas = dynamic(
-  () => import('@/components/canvas/CosmicGalaxyCanvas').then((m) => m.CosmicGalaxyCanvas),
-  { ssr: false }
-);
+import { ActMarquee } from '@/components/dom/ActMarquee';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeScene, setActiveScene] = useState(0);
-  const [selectedTech, setSelectedTech] = useState<string | null>(null);
-  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
 
   // Initialize Lenis smooth scroll
   useLenis();
 
-  // Track normalized mouse coordinates
-  const mouse = useMousePosition();
-
-  // Track active scene in viewport
+  // Track active scene in viewport for Navigation scroll-spy
   useEffect(() => {
     const handleScroll = () => {
       const sceneIds = ['hero', 'about', 'experience', 'skills', 'projects', 'cp-stats', 'contact'];
@@ -55,12 +43,12 @@ export default function Home() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <main className="relative bg-[#050505] bg-noise min-h-screen text-white overflow-x-hidden selection:bg-[#00E5FF]/30 selection:text-[#00E5FF]">
+    <main className="relative bg-[#050505] bg-noise min-h-screen text-white overflow-x-hidden selection:bg-[#FFFFFF]/30 selection:text-[#FFFFFF]">
       {/* Preloader */}
       <AnimatePresence>
         {isLoading && (
@@ -74,23 +62,14 @@ export default function Home() {
       {/* Top Floating Pill Navigation */}
       <Navigation activeScene={activeScene} />
 
-      {/* Minimal Elegant Cosmic Galaxy Canvas */}
-      <CosmicGalaxyCanvas
-        activeScene={activeScene}
-        selectedTech={selectedTech}
-        mouse={mouse}
-      />
-
       {/* Natural Filmlike Continuous Layout */}
       <div className="relative z-10 space-y-8 md:space-y-12">
         <ActHero />
+        <ActMarquee />
         <ActAbout />
         <ActExperience />
         <ActTechStack />
-        <ActProjects
-          activeProjectIndex={activeProjectIndex}
-          setActiveProjectIndex={setActiveProjectIndex}
-        />
+        <ActProjects />
         <ActCPStats />
         <ActContact />
       </div>
