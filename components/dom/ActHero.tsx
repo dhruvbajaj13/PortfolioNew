@@ -4,80 +4,91 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Linkedin, Mail, ArrowDown, ExternalLink, Download } from 'lucide-react';
 
-// Minimal floating white particles — no neon, no cyan, no shapes
-const HeroParticleBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+import * as THREE from 'three';
+
+// Original 3D Spinning Wireframe Icosahedrons + Particle Background
+const Hero3DGeometricBackground = () => {
+  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const container = mountRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
+    camera.position.z = 6;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // Spinning Wireframe Icosahedron — Left
+    const icoGeo1 = new THREE.IcosahedronGeometry(1.6, 1);
+    const icoMat1 = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.18 });
+    const icoMesh1 = new THREE.Mesh(icoGeo1, icoMat1);
+    icoMesh1.position.set(-3.5, 0.5, -2);
+    scene.add(icoMesh1);
+
+    // Spinning Wireframe Icosahedron — Right
+    const icoGeo2 = new THREE.IcosahedronGeometry(2.2, 1);
+    const icoMat2 = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.22 });
+    const icoMesh2 = new THREE.Mesh(icoGeo2, icoMat2);
+    icoMesh2.position.set(3.8, -0.2, -3);
+    scene.add(icoMesh2);
+
+    // Floating Particle Field
+    const particleCount = 600;
+    const particleGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const cyan = new THREE.Color(0x00e5ff);
+    const white = new THREE.Color(0xffffff);
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 16;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      const c = Math.random() > 0.5 ? cyan : white;
+      colors[i * 3] = c.r; colors[i * 3 + 1] = c.g; colors[i * 3 + 2] = c.b;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    const particleMat = new THREE.PointsMaterial({ size: 0.035, vertexColors: true, transparent: true, opacity: 0.65, blending: THREE.AdditiveBlending });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
 
     let animId: number;
-    let w = canvas.width = window.innerWidth;
-    let h = canvas.height = window.innerHeight;
-
-    const N = 90;
-    type Dot = { x: number; y: number; vx: number; vy: number; r: number; a: number };
-    const dots: Dot[] = Array.from({ length: N }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.25,
-      vy: (Math.random() - 0.5) * 0.25,
-      r: Math.random() * 1.6 + 0.4,
-      a: Math.random() * 0.4 + 0.15,
-    }));
-
-    const maxDist = 140;
-
-    const draw = () => {
-      ctx.clearRect(0, 0, w, h);
-      // Draw connecting lines
-      for (let i = 0; i < N; i++) {
-        for (let j = i + 1; j < N; j++) {
-          const dx = dots[i].x - dots[j].x;
-          const dy = dots[i].y - dots[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < maxDist) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(255,255,255,${0.08 * (1 - dist / maxDist)})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(dots[i].x, dots[i].y);
-            ctx.lineTo(dots[j].x, dots[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-      // Draw dots
-      for (const d of dots) {
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${d.a})`;
-        ctx.fill();
-        d.x += d.vx;
-        d.y += d.vy;
-        if (d.x < 0 || d.x > w) d.vx *= -1;
-        if (d.y < 0 || d.y > h) d.vy *= -1;
-      }
-      animId = requestAnimationFrame(draw);
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      icoMesh1.rotation.y += 0.003; icoMesh1.rotation.x += 0.002;
+      icoMesh2.rotation.y -= 0.0025; icoMesh2.rotation.x -= 0.0015;
+      particles.rotation.y += 0.0006; particles.rotation.x += 0.0003;
+      renderer.render(scene, camera);
     };
-    draw();
+    animate();
 
-    const onResize = () => {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
+    const handleResize = () => {
+      if (!container) return;
+      const w = container.clientWidth; const h = container.clientHeight;
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
     };
-    window.addEventListener('resize', onResize);
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
-      window.removeEventListener('resize', onResize);
+      if (container && renderer.domElement) container.removeChild(renderer.domElement);
+      icoGeo1.dispose(); icoMat1.dispose(); icoGeo2.dispose(); icoMat2.dispose();
+      particleGeo.dispose(); particleMat.dispose(); renderer.dispose();
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none opacity-60" />;
+  return <div ref={mountRef} className="absolute inset-0 z-0 pointer-events-none opacity-80" />;
 };
-
 
 // Roles for Typewriter Text Loop
 const ROLES = [
@@ -135,8 +146,8 @@ export function ActHero({
       id="hero"
       className="relative w-full min-h-screen flex flex-col justify-between px-4 sm:px-8 md:px-16 pt-28 sm:pt-36 pb-12 overflow-hidden pointer-events-none z-10 bg-[#050505]"
     >
-      {/* Minimal Particle Background */}
-      <HeroParticleBackground />
+      {/* 3D Geometric Wireframe Background */}
+      <Hero3DGeometricBackground />
 
       {/* Volumetric Radial Ambient Lighting */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0%,transparent_70%)] blur-[160px] pointer-events-none z-0" />

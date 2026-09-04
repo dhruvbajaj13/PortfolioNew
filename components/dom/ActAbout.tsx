@@ -42,13 +42,13 @@ export function ActAbout() {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-stretch">
 
           {/* Left — profile photo */}
-          <div className="w-full lg:w-[38%] flex justify-center">
+          <div className="w-full lg:w-[44%] flex justify-center">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative w-full aspect-square max-w-[280px] lg:max-w-[320px] rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02] group shadow-2xl"
+              className="relative w-full aspect-square max-w-[380px] lg:max-w-[450px] rounded-3xl overflow-hidden border border-white/15 bg-white/[0.03] group shadow-2xl"
             >
               <img
                 src="/images/dhruv_profile.jpg"

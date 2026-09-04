@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Github, ArrowUpRight } from 'lucide-react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Github, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface ProjectItem {
   id: string;
@@ -77,113 +75,155 @@ export const PROJECTS_DATA: ProjectItem[] = [
 ];
 
 export function ActProjects() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement[]>([]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+  // Sync active index with scroll position
+  const handleScroll = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
 
-    const ctx = gsap.context(() => {
-      // Each card: slide in from below as it enters, previous card scales down
-      cardsRef.current.forEach((card, i) => {
-        if (!card) return;
+    const scrollLeft = container.scrollLeft;
+    // Estimated width of one card + gap
+    const cardEl = container.querySelector<HTMLElement>('[data-project-card]');
+    const cardWidth = cardEl ? cardEl.offsetWidth + 20 : container.offsetWidth * 0.8;
+    const newIndex = Math.round(scrollLeft / (cardWidth > 0 ? cardWidth : 1));
+    const clampedIndex = Math.max(0, Math.min(PROJECTS_DATA.length - 1, newIndex));
+    setActiveIndex(clampedIndex);
+  };
 
-        // Slide in from below
-        gsap.fromTo(
-          card,
-          { yPercent: 12, opacity: 0 },
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 0.5,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 88%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
+  const scrollToProject = (index: number) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
 
-        // Scale down previous cards as current scrolls up
-        if (i < cardsRef.current.length - 1) {
-          const nextCard = cardsRef.current[i + 1];
-          if (nextCard) {
-            gsap.to(card, {
-              scale: 0.94,
-              opacity: 0.45,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: nextCard,
-                start: 'top 75%',
-                end: 'top 30%',
-                scrub: 0.8,
-              },
-            });
-          }
-        }
+    const cards = container.querySelectorAll<HTMLElement>('[data-project-card]');
+    if (cards[index]) {
+      cards[index].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
       });
-    }, sectionRef);
+      setActiveIndex(index);
+    }
+  };
 
-    return () => ctx.revert();
-  }, []);
+  const handlePrev = () => {
+    const prev = Math.max(0, activeIndex - 1);
+    scrollToProject(prev);
+  };
+
+  const handleNext = () => {
+    const next = Math.min(PROJECTS_DATA.length - 1, activeIndex + 1);
+    scrollToProject(next);
+  };
 
   return (
-    <section id="projects" ref={sectionRef} className="relative bg-[#050505] pt-16 pb-20 md:pt-24 md:pb-28">
+    <section id="projects" className="relative bg-[#050505] pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
+      {/* Section Header with Controls */}
+      <div className="max-w-6xl mx-auto mb-8 md:mb-12 px-4 sm:px-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-mono text-xs tracking-[0.25em] text-white/40 uppercase mb-2"
+          >
+            — Selected Works —
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-display text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none"
+          >
+            Projects
+          </motion.h2>
+        </div>
 
-      {/* Section Header */}
-      <div className="max-w-6xl mx-auto mb-12 md:mb-16 px-4 sm:px-8">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-mono text-xs tracking-[0.25em] text-white/40 uppercase mb-3"
-        >
-          — Selected Works —
-        </motion.p>
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-display text-5xl sm:text-7xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none"
-        >
-          Projects
-        </motion.h2>
+        {/* Carousel Navigation Bar (Arrows + Counter + Dots) */}
+        <div className="flex items-center gap-4">
+          {/* Step Dots */}
+          <div className="flex items-center gap-2 mr-2">
+            {PROJECTS_DATA.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToProject(i)}
+                aria-label={`Go to project ${i + 1}`}
+                className={`transition-all duration-300 rounded-full ${
+                  activeIndex === i
+                    ? 'w-8 h-2 bg-white'
+                    : 'w-2 h-2 bg-white/20 hover:bg-white/50'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Counter */}
+          <div className="font-mono text-xs text-white/50 tracking-widest px-2">
+            <span className="text-white font-bold">0{activeIndex + 1}</span> / 0{PROJECTS_DATA.length}
+          </div>
+
+          {/* Arrow Buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrev}
+              disabled={activeIndex === 0}
+              aria-label="Previous project"
+              className="w-10 h-10 rounded-full border border-white/15 bg-white/5 flex items-center justify-center text-white/70 hover:text-white hover:border-white/40 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={activeIndex === PROJECTS_DATA.length - 1}
+              aria-label="Next project"
+              className="w-10 h-10 rounded-full border border-white/15 bg-white/5 flex items-center justify-center text-white/70 hover:text-white hover:border-white/40 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Cards — stacked, each is ~55-60vh so multiple are visible and scroll feels tight */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 flex flex-col gap-5">
+      {/* Horizontal Scroll Carousel Track */}
+      <div
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="w-full flex gap-5 overflow-x-auto snap-x snap-mandatory px-4 sm:px-8 md:px-[calc((100vw-760px)/2)] scroll-smooth no-scrollbar pb-6"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
         {PROJECTS_DATA.map((proj, i) => (
           <div
             key={proj.id}
-            ref={(el) => { if (el) cardsRef.current[i] = el; }}
-            className="sticky"
-            style={{ top: `${72 + i * 16}px`, zIndex: 10 + i }}
+            data-project-card
+            className="shrink-0 snap-center w-[88vw] sm:w-[580px] md:w-[680px] lg:w-[740px]"
           >
-            <div
-              className="w-full bg-[#0C0C0C] rounded-2xl border border-white/10 overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.7)]"
-              style={{ minHeight: '58vh' }}
-            >
-              {/* Card top bar */}
-              <div className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-white/8 bg-[#0A0A0A]">
-                <div className="flex items-center gap-4">
-                  <span className="font-display font-black text-white/12 text-[2.5rem] md:text-[3.5rem] leading-none">
+            <div className="w-full bg-[#0D0D0D] rounded-3xl border border-white/10 overflow-hidden shadow-[0_12px_50px_rgba(0,0,0,0.8)] hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
+              
+              {/* Card Top Bar */}
+              <div className="flex items-center justify-between px-6 md:px-8 py-4 border-b border-white/8 bg-[#111111]/70">
+                <div className="flex items-center gap-3.5">
+                  <span className="font-display font-black text-white/20 text-2xl md:text-3xl leading-none">
                     0{i + 1}
                   </span>
                   <div>
-                    <p className="font-mono text-[9px] tracking-[0.2em] text-white/35 uppercase">{proj.category}</p>
-                    <h3 className="font-display font-black text-lg md:text-2xl text-white tracking-tight uppercase leading-none">
+                    <span className="font-mono text-[9px] tracking-[0.2em] text-white/40 uppercase">
+                      {proj.category}
+                    </span>
+                    <h3 className="font-display font-black text-lg md:text-xl text-white tracking-tight uppercase leading-none">
                       {proj.title}
                     </h3>
-                    <p className="text-white/40 text-[11px] md:text-xs mt-0.5 font-light">{proj.tagline}</p>
                   </div>
                 </div>
+
+                {/* GitHub & Live Links */}
                 <div className="flex items-center gap-2 shrink-0">
                   <a
                     href={proj.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white hover:border-white/50 transition-all bg-[#050505]"
+                    className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-white/15 flex items-center justify-center text-white/60 hover:text-white hover:border-white/50 transition-all bg-[#050505]"
+                    title="View GitHub Repository"
                   >
                     <Github className="w-3.5 h-3.5" />
                   </a>
@@ -191,7 +231,8 @@ export function ActProjects() {
                     href={proj.liveDemo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3.5 h-8 md:h-10 rounded-full bg-white text-black font-bold uppercase tracking-wider text-[10px] flex items-center gap-1 hover:scale-105 transition-transform"
+                    className="px-3.5 h-8 md:h-9 rounded-full bg-white text-black font-bold uppercase tracking-wider text-[10px] flex items-center gap-1 hover:scale-105 transition-transform"
+                    title="Open Live Preview"
                   >
                     <span>Live</span>
                     <ArrowUpRight className="w-3 h-3" />
@@ -199,36 +240,53 @@ export function ActProjects() {
                 </div>
               </div>
 
-              {/* Card body */}
-              <div className="flex flex-col md:flex-row" style={{ minHeight: 'calc(58vh - 68px)' }}>
-                {/* Left info */}
-                <div className="w-full md:w-[44%] p-6 md:p-8 flex flex-col gap-3">
-                  <div className="flex flex-wrap gap-1.5">
+              {/* Card Content Split: Info Left + Image Right */}
+              <div className="p-6 md:p-7 flex flex-col md:flex-row gap-6 items-center">
+                {/* Left: Summary Details */}
+                <div className="w-full md:w-[50%] flex flex-col gap-3">
+                  <p className="text-white/50 text-xs font-light leading-snug">
+                    {proj.tagline}
+                  </p>
+
+                  {/* Tech Stack Badges */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {proj.techStack.map((tech) => (
                       <span
                         key={tech}
-                        className="px-2.5 py-0.5 rounded-full border border-white/10 bg-white/5 text-[10px] font-mono text-white/60"
+                        className="px-2 py-0.5 rounded-md border border-white/10 bg-white/[0.04] text-[10px] font-mono text-white/70"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
 
-                  <div>
-                    <p className="font-mono text-[8px] tracking-widest text-white/25 uppercase mb-1">// Problem</p>
-                    <p className="text-[11px] md:text-sm text-white/55 leading-relaxed font-light">{proj.problem}</p>
+                  {/* Problem & Solution */}
+                  <div className="pt-2 space-y-2">
+                    <div>
+                      <span className="font-mono text-[8px] tracking-widest text-white/30 uppercase block mb-0.5">
+                        // Problem
+                      </span>
+                      <p className="text-xs text-white/65 leading-relaxed font-light line-clamp-2">
+                        {proj.problem}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="font-mono text-[8px] tracking-widest text-white/30 uppercase block mb-0.5">
+                        // Solution
+                      </span>
+                      <p className="text-xs text-white/65 leading-relaxed font-light line-clamp-2">
+                        {proj.solution}
+                      </p>
+                    </div>
                   </div>
 
-                  <div>
-                    <p className="font-mono text-[8px] tracking-widest text-white/25 uppercase mb-1">// Solution</p>
-                    <p className="text-[11px] md:text-sm text-white/55 leading-relaxed font-light">{proj.solution}</p>
-                  </div>
-
-                  <div className="mt-auto pt-3 border-t border-white/5">
+                  {/* Key Features */}
+                  <div className="pt-2 border-t border-white/5">
                     <ul className="grid grid-cols-2 gap-1.5">
-                      {proj.features.map((f) => (
-                        <li key={f} className="flex items-center gap-1.5 text-[10px] text-white/35">
-                          <span className="w-1 h-1 rounded-full bg-white/25 shrink-0" />
+                      {proj.features.slice(0, 4).map((f) => (
+                        <li key={f} className="flex items-center gap-1.5 text-[10px] text-white/40">
+                          <span className="w-1 h-1 rounded-full bg-white/40 shrink-0" />
                           <span className="truncate">{f}</span>
                         </li>
                       ))}
@@ -236,20 +294,26 @@ export function ActProjects() {
                   </div>
                 </div>
 
-                {/* Right: actual project image — colored */}
-                <div className="hidden md:block flex-1 relative overflow-hidden border-l border-white/8 group cursor-pointer">
+                {/* Right: Colored Project Image Preview */}
+                <div className="w-full md:w-[50%] aspect-[16/10] md:aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 relative group/preview bg-[#050505]">
                   <img
                     src={proj.image}
                     alt={proj.title}
-                    className="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-[1.03] transition-all duration-700"
+                    className="w-full h-full object-cover opacity-90 group-hover/preview:opacity-100 group-hover/preview:scale-105 transition-all duration-500"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0C]/60 via-transparent to-transparent group-hover:opacity-0 transition-opacity duration-600" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                 </div>
               </div>
+
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Swipe/Scroll Hint for Mobile */}
+      <div className="text-center pt-2 text-white/25 font-mono text-[10px] tracking-wider md:hidden">
+        ← Swipe left / right to browse →
       </div>
     </section>
   );
