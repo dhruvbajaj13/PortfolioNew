@@ -56,103 +56,72 @@ export function ActTechStack() {
   return (
     <section
       id="skills"
-      className="relative w-full px-4 sm:px-8 md:px-16 py-24 md:py-32 bg-[#050505]"
+      className="relative w-full px-4 sm:px-8 md:px-16 py-20 md:py-28 bg-[#050505]"
     >
       <div className="max-w-6xl mx-auto">
 
-        {/* Header — same premium style as Experience */}
-        <div className="mb-16 md:mb-20">
+        {/* Section Header */}
+        <div className="mb-10 md:mb-12">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-mono text-xs tracking-[0.25em] text-white/40 uppercase mb-4"
+            className="font-mono text-xs tracking-[0.25em] text-white/40 uppercase mb-3"
           >
             — Tech Arsenal —
           </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-display text-5xl sm:text-7xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none"
-          >
-            Skills
-          </motion.h2>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="font-display text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none"
+            >
+              Skills
+            </motion.h2>
+            <span className="font-mono text-xs text-white/40 tracking-wider">
+              [ {ALL_TECH.length} Active Technologies & Tools ]
+            </span>
+          </div>
         </div>
 
-        {/* Two-column layout — identical to Experience layout */}
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
-
-          {/* Left column – clickable categories list */}
-          <div className="lg:w-[42%] flex flex-col gap-3">
-            {TABS.map((tab, i) => {
-              const count = tab === 'All' ? ALL_TECH.length : ALL_TECH.filter(t => t.category === tab).length;
-              return (
-                <motion.button
-                  key={tab}
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.08 }}
-                  onClick={() => setActiveTab(tab)}
-                  className={`group text-left w-full px-6 py-5 rounded-2xl border transition-all duration-300 flex justify-between items-center gap-4 ${
-                    activeTab === tab
-                      ? 'bg-white/5 border-white/30'
-                      : 'bg-white/[0.02] border-white/8 hover:border-white/20 hover:bg-white/[0.04]'
-                  }`}
-                >
-                  <div className="flex flex-col">
-                    <span className={`font-display font-bold text-lg md:text-xl tracking-tight transition-colors leading-tight ${activeTab === tab ? 'text-white' : 'text-white/50 group-hover:text-white/85'}`}>
-                      {tab}
-                    </span>
-                    <span className={`font-mono text-[10px] tracking-widest uppercase transition-colors mt-0.5 ${activeTab === tab ? 'text-white/40' : 'text-white/20 group-hover:text-white/30'}`}>
-                      Category {i + 1}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className={`font-mono text-xs transition-colors ${activeTab === tab ? 'text-white/60' : 'text-white/30 group-hover:text-white/50'}`}>
-                      {count} items
-                    </span>
-                    {/* Active indicator line on right */}
-                    <div className={`w-0.5 h-10 rounded-full flex-shrink-0 transition-all duration-300 ${activeTab === tab ? 'bg-white' : 'bg-white/10'}`} />
-                  </div>
-                </motion.button>
-              );
-            })}
-          </div>
-
-          {/* Right column – tech stack grid */}
-          <div className="lg:flex-1 relative">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10 flex flex-col justify-between h-full gap-8 min-h-[350px]"
+        {/* Top Horizontal Filter Tabs (Zero Empty Space) */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-8">
+          {TABS.map((tab) => {
+            const count = tab === 'All' ? ALL_TECH.length : ALL_TECH.filter(t => t.category === tab).length;
+            const isActive = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 sm:px-5 py-2 rounded-full font-mono text-xs transition-all duration-300 flex items-center gap-2 border ${
+                  isActive
+                    ? 'bg-white text-black font-bold border-white shadow-[0_0_20px_rgba(255,255,255,0.3)] scale-105'
+                    : 'bg-white/[0.03] text-white/60 border-white/10 hover:border-white/30 hover:text-white hover:bg-white/[0.06]'
+                }`}
               >
-                <div className="flex flex-col gap-1 pb-6 border-b border-white/10">
-                  <h3 className="font-display font-black text-2xl text-white tracking-tight">
-                    {activeTab} Stack
-                  </h3>
-                  <p className="text-white/40 text-xs font-mono tracking-wider uppercase">
-                    {filtered.length} Technologies Active
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 py-2">
-                  {filtered.map((tech, i) => (
-                    <TechCard key={tech.name} tech={tech} index={i} />
-                  ))}
-                </div>
-
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
+                <span>{tab}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  isActive ? 'bg-black/15 text-black font-semibold' : 'bg-white/10 text-white/40'
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
+
+        {/* Full-width Responsive Tech Grid */}
+        <motion.div
+          layout
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4"
+        >
+          <AnimatePresence mode="popLayout">
+            {filtered.map((tech, i) => (
+              <TechCard key={tech.name} tech={tech} index={i} />
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
       </div>
     </section>
@@ -164,31 +133,39 @@ function TechCard({ tech, index }: { tech: typeof ALL_TECH[0]; index: number }) 
 
   return (
     <motion.div
+      layout
       initial={{ opacity: 0, scale: 0.9, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.02, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="group relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-white/5 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.08] transition-all duration-300 cursor-default hover:scale-[1.03] shadow-md hover:shadow-lg"
+      exit={{ opacity: 0, scale: 0.85 }}
+      transition={{ duration: 0.3, delay: Math.min(index * 0.02, 0.3) }}
+      whileHover={{ y: -4, scale: 1.04 }}
+      className="group relative flex flex-col items-center justify-center gap-2.5 p-4 rounded-2xl border border-white/8 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.06] transition-all duration-300 cursor-default shadow-md hover:shadow-xl"
     >
-      {/* Icon container */}
-      <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-white/10 bg-white/5 transition-all duration-300 group-hover:scale-105 group-hover:border-white/30">
+      {/* Icon container with vibrant colored logo */}
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center border border-white/10 bg-white/5 transition-all duration-300 group-hover:scale-110 group-hover:border-white/30 shadow-inner">
         {!imgError ? (
           <img
             src={tech.logo}
             alt={tech.name}
-            className="w-5 h-5 object-contain opacity-90 group-hover:opacity-100 transition-all duration-300"
+            className="w-6 h-6 object-contain opacity-100 transition-transform duration-300"
             onError={() => setImgError(true)}
             loading="lazy"
           />
         ) : (
-          <span className="text-sm font-extrabold font-mono text-white/60 group-hover:text-white transition-colors">
+          <span className="text-base font-extrabold font-mono text-white/80 group-hover:text-white transition-colors">
             {tech.name[0]}
           </span>
         )}
       </div>
 
-      <span className="text-[11px] font-semibold text-white/40 group-hover:text-white transition-colors text-center leading-tight">
-        {tech.name}
-      </span>
+      <div className="text-center space-y-0.5">
+        <span className="text-xs font-semibold text-white/70 group-hover:text-white transition-colors block leading-tight">
+          {tech.name}
+        </span>
+        <span className="text-[9px] font-mono text-white/30 group-hover:text-white/50 block">
+          {tech.category}
+        </span>
+      </div>
     </motion.div>
   );
 }

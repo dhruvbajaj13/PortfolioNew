@@ -216,6 +216,36 @@ export function ActCPStats() {
                   ))}
                 </div>
 
+                {/* LeetCode Consistency Streak Banner (Visible only when LeetCode is selected) */}
+                {active.id === 'leetcode' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="p-3.5 sm:p-5 rounded-2xl border border-white/10 bg-[#0B0B0B] space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="font-mono text-xs font-semibold text-white/90">
+                          366-Day Problem Solving Streak
+                        </span>
+                      </div>
+                      <span className="font-mono text-[10px] text-emerald-400/90 border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
+                        Daily Active
+                      </span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-white/8 bg-[#141414]/90 p-1 sm:p-2">
+                      <img
+                        src="/images/leetcode_streak.png"
+                        alt="LeetCode 4,000 Submissions with 366 Max Streak"
+                        className="w-full h-auto object-contain rounded-lg"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
                 {/* Direct Link Button */}
                 <div className="pt-6 border-t border-white/8 mt-auto flex justify-end">
                   <a

@@ -42,13 +42,13 @@ export function ActAbout() {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-stretch">
 
           {/* Left — profile photo */}
-          <div className="w-full lg:w-[44%] flex justify-center">
+          <div className="w-full lg:w-[36%] flex justify-center">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative w-full aspect-square max-w-[380px] lg:max-w-[450px] rounded-3xl overflow-hidden border border-white/15 bg-white/[0.03] group shadow-2xl"
+              className="relative w-full aspect-square max-w-[310px] lg:max-w-[350px] rounded-2xl overflow-hidden border border-white/15 bg-white/[0.03] group shadow-2xl"
             >
               <img
                 src="/images/dhruv_profile.jpg"
@@ -58,7 +58,7 @@ export function ActAbout() {
             </motion.div>
           </div>
 
-          {/* Right — detail panel (like the Experience detail panel) */}
+          {/* Right — detail panel */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -71,17 +71,15 @@ export function ActAbout() {
               <h3 className="font-display font-black text-white text-2xl md:text-3xl tracking-tight mb-4">
                 Dhruv Bajaj
               </h3>
-              <div className="flex flex-col gap-4 text-white/60 text-sm md:text-base leading-relaxed font-light">
+              <div className="flex flex-col gap-4 text-white/65 text-sm md:text-base leading-relaxed font-light">
                 <p>
-                  I'm a <span className="text-white font-medium">3rd-year B.Tech student</span> at{' '}
-                  <span className="text-white font-medium">NSUT, New Delhi</span>, specialising in Electronics &amp; Communication Engineering with an IoT focus.
+                  I’m a <span className="text-white font-medium">final year B.Tech student</span> at <span className="text-white font-medium">NSUT</span> pursuing <span className="text-white font-medium">Electronics &amp; Communication Engineering</span> with a specialization in <span className="text-white font-medium">IoT</span>. I’m passionate about software development and enjoy building solutions that solve real-world problems.
                 </p>
                 <p>
-                  I build production-grade web applications and AI systems — from responsive React frontends to scalable REST APIs and autonomous RAG-driven AI agents. I thrive at the intersection of clean engineering and striking user experiences.
+                  I have a strong foundation in <span className="text-white font-medium">Data Structures &amp; Algorithms using Java</span> and hands-on experience in full-stack web development using <span className="text-white font-medium">React.js, Node.js, Express.js, and MongoDB</span>. Recently, I’ve also been exploring AI technologies and building applications using <span className="text-white font-medium">LangChain, LangGraph, RAG, Embeddings, Vector DB</span>, and LLM-based systems to create intelligent and practical solutions.
                 </p>
                 <p>
-                  Beyond software, I actively compete in algorithmic problem solving and am currently a{' '}
-                  <span className="text-white font-medium">LeetCode Knight</span> with a peak rating of 1933.
+                  I’m always eager to learn new technologies, work on impactful projects, and grow as a software engineer. Currently, I’m looking for <span className="text-white font-medium">internship opportunities</span> where I can contribute, learn from experienced developers, and gain industry experience.
                 </p>
               </div>
             </div>
