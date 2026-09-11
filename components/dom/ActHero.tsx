@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Github, Linkedin, Mail, ArrowDown, ExternalLink, Download } from 'lucide-react';
+import React, { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { Github, Linkedin, Mail, ArrowDown, ExternalLink, Download } from "lucide-react";
+import * as THREE from "three";
 
-import * as THREE from 'three';
-
-// Original 3D Spinning Wireframe Icosahedrons + Particle Background
-const Hero3DGeometricBackground = () => {
+// ─── Interactive 3D Retro Developer Workstation Canvas ───
+const HeroRetroWorkstation3D = () => {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,85 +16,323 @@ const Hero3DGeometricBackground = () => {
     const width = container.clientWidth || window.innerWidth;
     const height = container.clientHeight || window.innerHeight;
 
+    // Scene & Camera
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.z = 6;
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
+    camera.position.set(0, 1.4, 5.2);
+    camera.lookAt(0, 0.5, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Spinning Wireframe Icosahedron — Left
-    const icoGeo1 = new THREE.IcosahedronGeometry(1.6, 1);
-    const icoMat1 = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.18 });
-    const icoMesh1 = new THREE.Mesh(icoGeo1, icoMat1);
-    icoMesh1.position.set(-3.5, 0.5, -2);
-    scene.add(icoMesh1);
+    // Root Group for interactive mouse parallax
+    const deskGroup = new THREE.Group();
+    deskGroup.position.set(0, -0.4, 0);
+    scene.add(deskGroup);
 
-    // Spinning Wireframe Icosahedron — Right
-    const icoGeo2 = new THREE.IcosahedronGeometry(2.2, 1);
-    const icoMat2 = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.22 });
-    const icoMesh2 = new THREE.Mesh(icoGeo2, icoMat2);
-    icoMesh2.position.set(3.8, -0.2, -3);
-    scene.add(icoMesh2);
+    // 1. CRT Monitor Canvas Texture (Live animated terminal screen)
+    const screenCanvas = document.createElement("canvas");
+    screenCanvas.width = 512;
+    screenCanvas.height = 384;
+    const ctx = screenCanvas.getContext("2d");
+    const screenTexture = new THREE.CanvasTexture(screenCanvas);
 
-    // Floating Particle Field
-    const particleCount = 600;
-    const particleGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-    const cyan = new THREE.Color(0x00e5ff);
-    const white = new THREE.Color(0xffffff);
-    for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 16;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
-      const c = Math.random() > 0.5 ? cyan : white;
-      colors[i * 3] = c.r; colors[i * 3 + 1] = c.g; colors[i * 3 + 2] = c.b;
+    // Materials
+    const darkChassisMat = new THREE.MeshStandardMaterial({
+      color: 0x18181b,
+      roughness: 0.5,
+      metalness: 0.2,
+    });
+    const beigeBezelMat = new THREE.MeshStandardMaterial({
+      color: 0x242429,
+      roughness: 0.6,
+      metalness: 0.1,
+    });
+
+    // Monitor Stand Base
+    const baseGeo = new THREE.CylinderGeometry(0.55, 0.65, 0.08, 32);
+    const baseMesh = new THREE.Mesh(baseGeo, darkChassisMat);
+    baseMesh.position.set(0, 0.04, 0);
+    deskGroup.add(baseMesh);
+
+    // Monitor Stem
+    const stemGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.5, 16);
+    const stemMesh = new THREE.Mesh(stemGeo, darkChassisMat);
+    stemMesh.position.set(0, 0.3, 0);
+    deskGroup.add(stemMesh);
+
+    // Monitor Chassis Body
+    const monitorBodyGeo = new THREE.BoxGeometry(2.3, 1.6, 0.55);
+    const monitorBody = new THREE.Mesh(monitorBodyGeo, beigeBezelMat);
+    monitorBody.position.set(0, 1.25, 0);
+    deskGroup.add(monitorBody);
+
+    // CRT Screen Face
+    const screenGeo = new THREE.PlaneGeometry(1.95, 1.28);
+    const screenMat = new THREE.MeshBasicMaterial({ map: screenTexture });
+    const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+    screenMesh.position.set(0, 1.25, 0.28);
+    deskGroup.add(screenMesh);
+
+    // Green Power LED
+    const ledGeo = new THREE.SphereGeometry(0.025, 16, 16);
+    const ledMat = new THREE.MeshBasicMaterial({ color: 0x22c55e });
+    const ledMesh = new THREE.Mesh(ledGeo, ledMat);
+    ledMesh.position.set(0.9, 0.55, 0.285);
+    deskGroup.add(ledMesh);
+
+    // Sticky Note on Monitor (Think Outside The Box / Build Impact)
+    const noteGeo = new THREE.PlaneGeometry(0.32, 0.32);
+    const noteCanvas = document.createElement("canvas");
+    noteCanvas.width = 128;
+    noteCanvas.height = 128;
+    const nctx = noteCanvas.getContext("2d");
+    if (nctx) {
+      nctx.fillStyle = "#fef08a";
+      nctx.fillRect(0, 0, 128, 128);
+      nctx.fillStyle = "#713f12";
+      nctx.font = "bold 15px monospace";
+      nctx.textAlign = "center";
+      nctx.fillText("BUILD", 64, 42);
+      nctx.fillText("IMPACT", 64, 72);
+      nctx.fillText("// 2025", 64, 102);
     }
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    const particleMat = new THREE.PointsMaterial({ size: 0.035, vertexColors: true, transparent: true, opacity: 0.65, blending: THREE.AdditiveBlending });
-    const particles = new THREE.Points(particleGeo, particleMat);
-    scene.add(particles);
+    const noteTexture = new THREE.CanvasTexture(noteCanvas);
+    const noteMat = new THREE.MeshBasicMaterial({ map: noteTexture });
+    const noteMesh = new THREE.Mesh(noteGeo, noteMat);
+    noteMesh.position.set(0.85, 1.88, 0.285);
+    noteMesh.rotation.z = -0.08;
+    deskGroup.add(noteMesh);
 
+    // 2. Mechanical Keyboard
+    const kbBaseGeo = new THREE.BoxGeometry(1.8, 0.08, 0.7);
+    const kbBase = new THREE.Mesh(kbBaseGeo, darkChassisMat);
+    kbBase.position.set(0, 0.05, 1.15);
+    kbBase.rotation.x = 0.08;
+    deskGroup.add(kbBase);
+
+    // Keyboard Keycaps
+    const keyGeo = new THREE.BoxGeometry(0.11, 0.04, 0.09);
+    const keyMatDark = new THREE.MeshStandardMaterial({ color: 0x2e2e33, roughness: 0.5 });
+    const keyMatOrange = new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.4 });
+    const keyMatCyan = new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.4 });
+
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 12; c++) {
+        const isEsc = r === 3 && c === 0;
+        const isEnter = r === 1 && c === 11;
+        const isSpace = r === 0 && (c >= 4 && c <= 7);
+        if (isSpace && c !== 4) continue;
+        const m = isEsc ? keyMatOrange : isEnter ? keyMatCyan : keyMatDark;
+        const kGeo = isSpace ? new THREE.BoxGeometry(0.5, 0.04, 0.09) : keyGeo;
+        const key = new THREE.Mesh(kGeo, m);
+        const xPos = isSpace ? 0 : (c - 5.5) * 0.13;
+        key.position.set(xPos, 0.08 + (3 - r) * 0.015, 0.88 + r * 0.14);
+        key.rotation.x = 0.08;
+        deskGroup.add(key);
+      }
+    }
+
+    // 3. Mouse and Mousepad
+    const padGeo = new THREE.BoxGeometry(0.7, 0.01, 0.8);
+    const padMat = new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.8 });
+    const pad = new THREE.Mesh(padGeo, padMat);
+    pad.position.set(1.35, 0.005, 1.15);
+    deskGroup.add(pad);
+
+    const mouseGeo = new THREE.BoxGeometry(0.22, 0.08, 0.35);
+    const mouseMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.4 });
+    const mouse = new THREE.Mesh(mouseGeo, mouseMat);
+    mouse.position.set(1.35, 0.045, 1.15);
+    deskGroup.add(mouse);
+
+    // 4. Yellow Rubber Duck Mascot (as shown in retro 3D portfolio reference)
+    const duckGroup = new THREE.Group();
+    const duckMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.3 });
+    const duckBody = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), duckMat);
+    duckBody.scale.set(1, 0.8, 1.15);
+    duckGroup.add(duckBody);
+
+    const duckHead = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 16), duckMat);
+    duckHead.position.set(0, 0.15, 0.08);
+    duckGroup.add(duckHead);
+
+    const beak = new THREE.Mesh(
+      new THREE.ConeGeometry(0.05, 0.1, 16),
+      new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.4 })
+    );
+    beak.rotation.x = Math.PI / 2;
+    beak.position.set(0, 0.14, 0.2);
+    duckGroup.add(beak);
+
+    duckGroup.position.set(-1.3, 0.14, 0.7);
+    duckGroup.rotation.y = 0.45;
+    deskGroup.add(duckGroup);
+
+    // 5. Coffee Mug
+    const mugGeo = new THREE.CylinderGeometry(0.14, 0.12, 0.32, 20);
+    const mugMat = new THREE.MeshStandardMaterial({ color: 0xe4e4e7, roughness: 0.3 });
+    const mug = new THREE.Mesh(mugGeo, mugMat);
+    mug.position.set(-1.35, 0.16, 1.25);
+    deskGroup.add(mug);
+
+    // 6. Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const screenLight = new THREE.PointLight(0x38bdf8, 1.8, 4.5);
+    screenLight.position.set(0, 1.25, 0.8);
+    deskGroup.add(screenLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    dirLight.position.set(3, 4, 3);
+    scene.add(dirLight);
+
+    const rimLight = new THREE.PointLight(0xa855f7, 1.5, 5);
+    rimLight.position.set(-3, 2, -2);
+    scene.add(rimLight);
+
+    // 7. Floating Ambient Particles
+    const dustCount = 150;
+    const dustGeo = new THREE.BufferGeometry();
+    const dustPos = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount; i++) {
+      dustPos[i * 3] = (Math.random() - 0.5) * 8;
+      dustPos[i * 3 + 1] = Math.random() * 4;
+      dustPos[i * 3 + 2] = (Math.random() - 0.5) * 6;
+    }
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+    const dustMat = new THREE.PointsMaterial({
+      size: 0.022,
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.5,
+    });
+    const dust = new THREE.Points(dustGeo, dustMat);
+    scene.add(dust);
+
+    // Animated Terminal Lines
+    let frame = 0;
+    const terminalLines = [
+      "> DHRUV_BAJAJ.sh --mode=production",
+      "> LeetCode Knight · Rating 1933 [1000+ SOLVED]",
+      "> Full-Stack MERN & Next.js [INITIALIZED]",
+      "> Agentic RAG & LangChain AI [ONLINE]",
+      "> CleanCity SIH IoT System [READY]",
+      "> Systems Operational. Ready to build_",
+    ];
+
+    // Mouse Tracking for Smooth 3D Tilt
+    let targetRotY = 0;
+    let targetRotX = 0;
+    const onMouseMove = (e: MouseEvent) => {
+      const normX = (e.clientX / window.innerWidth) * 2 - 1;
+      const normY = -(e.clientY / window.innerHeight) * 2 + 1;
+      targetRotY = normX * 0.22;
+      targetRotX = -normY * 0.12;
+    };
+    window.addEventListener("mousemove", onMouseMove);
+
+    // Animation Loop
     let animId: number;
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      icoMesh1.rotation.y += 0.003; icoMesh1.rotation.x += 0.002;
-      icoMesh2.rotation.y -= 0.0025; icoMesh2.rotation.x -= 0.0015;
-      particles.rotation.y += 0.0006; particles.rotation.x += 0.0003;
+      frame++;
+
+      // Lerp mouse tilt
+      deskGroup.rotation.y += (targetRotY - deskGroup.rotation.y) * 0.05;
+      deskGroup.rotation.x += (targetRotX - deskGroup.rotation.x) * 0.05;
+
+      // Dust float
+      const positions = dustGeo.attributes.position.array as Float32Array;
+      for (let i = 1; i < dustCount * 3; i += 3) {
+        positions[i] += 0.002;
+        if (positions[i] > 4) positions[i] = 0;
+      }
+      dustGeo.attributes.position.needsUpdate = true;
+
+      // Update Screen Canvas periodically
+      if (frame % 3 === 0 && ctx) {
+        ctx.fillStyle = "#090c13";
+        ctx.fillRect(0, 0, 512, 384);
+
+        // CRT Scanlines
+        ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+        for (let y = 0; y < 384; y += 4) {
+          ctx.fillRect(0, y, 512, 2);
+        }
+
+        // Window Title Bar
+        ctx.fillStyle = "#38bdf8";
+        ctx.font = "bold 18px monospace";
+        ctx.fillText("● ● ●  bash - 80x24", 24, 34);
+
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.25)";
+        ctx.beginPath();
+        ctx.moveTo(20, 48);
+        ctx.lineTo(492, 48);
+        ctx.stroke();
+
+        // Lines
+        ctx.font = "15px monospace";
+        const visibleLines = Math.min(Math.floor(frame / 40) + 1, terminalLines.length);
+        for (let l = 0; l < visibleLines; l++) {
+          const isPrompt = l === 0;
+          const isHighlight = l === 1 || l === 3;
+          ctx.fillStyle = isPrompt ? "#34d399" : isHighlight ? "#a855f7" : "#e2e8f0";
+          const text = terminalLines[l];
+          if (l === visibleLines - 1 && visibleLines < terminalLines.length) {
+            const charCount = Math.floor(((frame % 40) / 40) * text.length);
+            ctx.fillText(text.slice(0, charCount) + "█", 24, 82 + l * 34);
+          } else {
+            ctx.fillText(text, 24, 82 + l * 34);
+          }
+        }
+
+        screenTexture.needsUpdate = true;
+      }
+
       renderer.render(scene, camera);
     };
     animate();
 
     const handleResize = () => {
       if (!container) return;
-      const w = container.clientWidth; const h = container.clientHeight;
-      camera.aspect = w / h; camera.updateProjectionMatrix();
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", onMouseMove);
       cancelAnimationFrame(animId);
-      if (container && renderer.domElement) container.removeChild(renderer.domElement);
-      icoGeo1.dispose(); icoMat1.dispose(); icoGeo2.dispose(); icoMat2.dispose();
-      particleGeo.dispose(); particleMat.dispose(); renderer.dispose();
+      if (container && renderer.domElement) {
+        container.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
     };
   }, []);
 
-  return <div ref={mountRef} className="absolute inset-0 z-0 pointer-events-none opacity-80" />;
+  return (
+    <div
+      ref={mountRef}
+      className="absolute inset-0 z-0 pointer-events-none opacity-85 overflow-hidden"
+    />
+  );
 };
 
 // Roles for Typewriter Text Loop
 const ROLES = [
-  'Full-Stack Developer',
-  'AI Engineer',
-  'DSA Enthusiast',
-  'Software Developer',
+  "Full-Stack Developer",
+  "AI Engineer",
+  "DSA Enthusiast",
+  "Software Developer",
 ];
 
 export function ActHero({
@@ -105,11 +342,11 @@ export function ActHero({
   selectedProject?: any;
   setSelectedProject?: (proj: any) => void;
 }) {
-  const RESUME_URL = 'https://drive.google.com/file/d/1F0QmpaQFUWuysUn1V8pO1E9kHdVS_BCZ/view';
+  const RESUME_URL = "https://drive.google.com/file/d/1F0QmpaQFUWuysUn1V8pO1E9kHdVS_BCZ/view";
 
   // Typewriter Loop Logic
   const [roleIndex, setRoleIndex] = useState(0);
-  const [currentText, setCurrentText] = useState('');
+  const [currentText, setCurrentText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -124,7 +361,7 @@ export function ActHero({
         }
       } else {
         setCurrentText(targetRole.substring(0, currentText.length - 1));
-        if (currentText === '') {
+        if (currentText === "") {
           setIsDeleting(false);
           setRoleIndex((prev) => (prev + 1) % ROLES.length);
         }
@@ -135,9 +372,9 @@ export function ActHero({
   }, [currentText, isDeleting, roleIndex]);
 
   const scrollToNext = () => {
-    const nextEl = document.getElementById('about');
+    const nextEl = document.getElementById("about");
     if (nextEl) {
-      nextEl.scrollIntoView({ behavior: 'smooth' });
+      nextEl.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -146,16 +383,16 @@ export function ActHero({
       id="hero"
       className="relative w-full min-h-screen flex flex-col justify-between px-4 sm:px-8 md:px-16 pt-28 sm:pt-36 pb-12 overflow-hidden pointer-events-none z-10 bg-[#050505]"
     >
-      {/* 3D Geometric Wireframe Background */}
-      <Hero3DGeometricBackground />
+      {/* 3D Interactive Retro Developer Workstation Canvas */}
+      <HeroRetroWorkstation3D />
 
       {/* Volumetric Radial Ambient Lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0%,transparent_70%)] blur-[160px] pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.08)_0%,transparent_70%)] blur-[160px] pointer-events-none z-0" />
 
       {/* Main Hero Content Layout */}
-      <div className="max-w-4xl mx-auto w-full my-auto space-y-8 pt-4 text-center relative z-10">
+      <div className="max-w-4xl mx-auto w-full my-auto space-y-7 pt-4 text-center relative z-10">
         
-        {/* Status Pill Badge (Matching Screenshot) */}
+        {/* Status Pill Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -163,11 +400,11 @@ export function ActHero({
           className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#080808]/90 border border-white/10 text-xs font-semibold text-slate-300 shadow-lg pointer-events-auto backdrop-blur-md"
         >
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Open to SDE Internship Opportunities</span>
+          <span>Open to SDE Opportunities</span>
         </motion.div>
 
-        {/* Hero Title (Matching Screenshot: Dhruv Bajaj) */}
-        <div className="space-y-3">
+        {/* Hero Title */}
+        <div className="space-y-2">
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -198,33 +435,8 @@ export function ActHero({
           transition={{ duration: 0.9, delay: 0.6 }}
           className="font-sans text-base sm:text-xl text-[#A8A8A8] max-w-2xl mx-auto leading-relaxed"
         >
-          Final year B.Tech student at <span className="text-white font-medium">NSUT</span> pursuing ECE with IoT specialization. Passionate software engineer building full-stack platforms, agentic AI systems, and solving complex DSA problems.
+          Software engineer building production-grade full-stack web platforms and autonomous AI systems. Dedicated to algorithms, scalable architecture, and clean code.
         </motion.p>
-
-        {/* Floating Quick Domain Badges */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.65 }}
-          className="flex flex-wrap items-center justify-center gap-2 pointer-events-auto pt-1"
-        >
-          <span className="px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 font-mono text-[10.5px] font-semibold flex items-center gap-1.5 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            LeetCode Knight · Top 3%
-          </span>
-          <span className="px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 font-mono text-[10.5px] font-semibold flex items-center gap-1.5 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-            Agentic RAG & LangChain
-          </span>
-          <span className="px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-mono text-[10.5px] font-semibold flex items-center gap-1.5 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Smart India Hackathon Finalist
-          </span>
-          <span className="px-3 py-1 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 font-mono text-[10.5px] font-semibold flex items-center gap-1.5 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-            Full-Stack MERN & Next.js
-          </span>
-        </motion.div>
 
         {/* Hero Action CTA Buttons */}
         <motion.div
@@ -319,8 +531,8 @@ export function ActHero({
             <div className="w-px h-8 bg-white/10" />
 
             <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">NSUT</div>
-              <div className="font-mono text-[10px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">ECE · Final Year</div>
+              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">Top 3%</div>
+              <div className="font-mono text-[10px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">LeetCode Knight</div>
             </div>
           </div>
         </motion.div>

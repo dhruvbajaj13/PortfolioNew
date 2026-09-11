@@ -15,7 +15,6 @@ import { ActTechStack } from '@/components/dom/ActTechStack';
 import { ActProjects } from '@/components/dom/ActProjects';
 import { ActCPStats } from '@/components/dom/ActCPStats';
 import { ActContact } from '@/components/dom/ActContact';
-import { ActMarquee } from '@/components/dom/ActMarquee';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +64,6 @@ export default function Home() {
       {/* Natural Filmlike Continuous Layout */}
       <div className="relative z-10 space-y-8 md:space-y-12">
         <ActHero />
-        <ActMarquee />
         <ActAbout />
         <ActExperience />
         <ActTechStack />
