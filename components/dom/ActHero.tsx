@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Github, Linkedin, Mail, ArrowDown, ExternalLink, Download } from "lucide-react";
 import * as THREE from "three";
 
-// ─── Interactive 3D Retro Developer Workstation Canvas ───
+// ─── Compact 3D Retro Developer Workstation Canvas ───
 const HeroRetroWorkstation3D = () => {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -13,14 +13,14 @@ const HeroRetroWorkstation3D = () => {
     const container = mountRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    const width = container.clientWidth || 480;
+    const height = container.clientHeight || 360;
 
-    // Scene & Camera
+    // Scene & Camera (tuned for 4:3 compact canvas)
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-    camera.position.set(0, 1.4, 5.2);
-    camera.lookAt(0, 0.5, 0);
+    const camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 100);
+    camera.position.set(0, 1.3, 4.6);
+    camera.lookAt(0, 0.45, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
@@ -52,7 +52,7 @@ const HeroRetroWorkstation3D = () => {
     });
 
     // Monitor Stand Base
-    const baseGeo = new THREE.CylinderGeometry(0.55, 0.65, 0.08, 32);
+    const baseGeo = new THREE.CylinderGeometry(0.5, 0.6, 0.08, 32);
     const baseMesh = new THREE.Mesh(baseGeo, darkChassisMat);
     baseMesh.position.set(0, 0.04, 0);
     deskGroup.add(baseMesh);
@@ -64,27 +64,27 @@ const HeroRetroWorkstation3D = () => {
     deskGroup.add(stemMesh);
 
     // Monitor Chassis Body
-    const monitorBodyGeo = new THREE.BoxGeometry(2.3, 1.6, 0.55);
+    const monitorBodyGeo = new THREE.BoxGeometry(2.2, 1.55, 0.52);
     const monitorBody = new THREE.Mesh(monitorBodyGeo, beigeBezelMat);
     monitorBody.position.set(0, 1.25, 0);
     deskGroup.add(monitorBody);
 
     // CRT Screen Face
-    const screenGeo = new THREE.PlaneGeometry(1.95, 1.28);
+    const screenGeo = new THREE.PlaneGeometry(1.9, 1.24);
     const screenMat = new THREE.MeshBasicMaterial({ map: screenTexture });
     const screenMesh = new THREE.Mesh(screenGeo, screenMat);
-    screenMesh.position.set(0, 1.25, 0.28);
+    screenMesh.position.set(0, 1.25, 0.265);
     deskGroup.add(screenMesh);
 
     // Green Power LED
     const ledGeo = new THREE.SphereGeometry(0.025, 16, 16);
     const ledMat = new THREE.MeshBasicMaterial({ color: 0x22c55e });
     const ledMesh = new THREE.Mesh(ledGeo, ledMat);
-    ledMesh.position.set(0.9, 0.55, 0.285);
+    ledMesh.position.set(0.88, 0.58, 0.27);
     deskGroup.add(ledMesh);
 
-    // Sticky Note on Monitor (Think Outside The Box / Build Impact)
-    const noteGeo = new THREE.PlaneGeometry(0.32, 0.32);
+    // Sticky Note on Monitor
+    const noteGeo = new THREE.PlaneGeometry(0.3, 0.3);
     const noteCanvas = document.createElement("canvas");
     noteCanvas.width = 128;
     noteCanvas.height = 128;
@@ -102,19 +102,19 @@ const HeroRetroWorkstation3D = () => {
     const noteTexture = new THREE.CanvasTexture(noteCanvas);
     const noteMat = new THREE.MeshBasicMaterial({ map: noteTexture });
     const noteMesh = new THREE.Mesh(noteGeo, noteMat);
-    noteMesh.position.set(0.85, 1.88, 0.285);
+    noteMesh.position.set(0.82, 1.84, 0.27);
     noteMesh.rotation.z = -0.08;
     deskGroup.add(noteMesh);
 
     // 2. Mechanical Keyboard
-    const kbBaseGeo = new THREE.BoxGeometry(1.8, 0.08, 0.7);
+    const kbBaseGeo = new THREE.BoxGeometry(1.75, 0.08, 0.68);
     const kbBase = new THREE.Mesh(kbBaseGeo, darkChassisMat);
     kbBase.position.set(0, 0.05, 1.15);
     kbBase.rotation.x = 0.08;
     deskGroup.add(kbBase);
 
     // Keyboard Keycaps
-    const keyGeo = new THREE.BoxGeometry(0.11, 0.04, 0.09);
+    const keyGeo = new THREE.BoxGeometry(0.1, 0.04, 0.085);
     const keyMatDark = new THREE.MeshStandardMaterial({ color: 0x2e2e33, roughness: 0.5 });
     const keyMatOrange = new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.4 });
     const keyMatCyan = new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.4 });
@@ -126,89 +126,89 @@ const HeroRetroWorkstation3D = () => {
         const isSpace = r === 0 && (c >= 4 && c <= 7);
         if (isSpace && c !== 4) continue;
         const m = isEsc ? keyMatOrange : isEnter ? keyMatCyan : keyMatDark;
-        const kGeo = isSpace ? new THREE.BoxGeometry(0.5, 0.04, 0.09) : keyGeo;
+        const kGeo = isSpace ? new THREE.BoxGeometry(0.48, 0.04, 0.085) : keyGeo;
         const key = new THREE.Mesh(kGeo, m);
-        const xPos = isSpace ? 0 : (c - 5.5) * 0.13;
-        key.position.set(xPos, 0.08 + (3 - r) * 0.015, 0.88 + r * 0.14);
+        const xPos = isSpace ? 0 : (c - 5.5) * 0.125;
+        key.position.set(xPos, 0.08 + (3 - r) * 0.015, 0.9 + r * 0.135);
         key.rotation.x = 0.08;
         deskGroup.add(key);
       }
     }
 
     // 3. Mouse and Mousepad
-    const padGeo = new THREE.BoxGeometry(0.7, 0.01, 0.8);
+    const padGeo = new THREE.BoxGeometry(0.65, 0.01, 0.75);
     const padMat = new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.8 });
     const pad = new THREE.Mesh(padGeo, padMat);
-    pad.position.set(1.35, 0.005, 1.15);
+    pad.position.set(1.3, 0.005, 1.15);
     deskGroup.add(pad);
 
-    const mouseGeo = new THREE.BoxGeometry(0.22, 0.08, 0.35);
+    const mouseGeo = new THREE.BoxGeometry(0.2, 0.075, 0.32);
     const mouseMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.4 });
     const mouse = new THREE.Mesh(mouseGeo, mouseMat);
-    mouse.position.set(1.35, 0.045, 1.15);
+    mouse.position.set(1.3, 0.045, 1.15);
     deskGroup.add(mouse);
 
-    // 4. Yellow Rubber Duck Mascot (as shown in retro 3D portfolio reference)
+    // 4. Yellow Rubber Duck Mascot
     const duckGroup = new THREE.Group();
     const duckMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.3 });
-    const duckBody = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), duckMat);
+    const duckBody = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), duckMat);
     duckBody.scale.set(1, 0.8, 1.15);
     duckGroup.add(duckBody);
 
-    const duckHead = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 16), duckMat);
-    duckHead.position.set(0, 0.15, 0.08);
+    const duckHead = new THREE.Mesh(new THREE.SphereGeometry(0.095, 16, 16), duckMat);
+    duckHead.position.set(0, 0.14, 0.075);
     duckGroup.add(duckHead);
 
     const beak = new THREE.Mesh(
-      new THREE.ConeGeometry(0.05, 0.1, 16),
+      new THREE.ConeGeometry(0.045, 0.09, 16),
       new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.4 })
     );
     beak.rotation.x = Math.PI / 2;
-    beak.position.set(0, 0.14, 0.2);
+    beak.position.set(0, 0.13, 0.18);
     duckGroup.add(beak);
 
-    duckGroup.position.set(-1.3, 0.14, 0.7);
+    duckGroup.position.set(-1.25, 0.14, 0.7);
     duckGroup.rotation.y = 0.45;
     deskGroup.add(duckGroup);
 
     // 5. Coffee Mug
-    const mugGeo = new THREE.CylinderGeometry(0.14, 0.12, 0.32, 20);
+    const mugGeo = new THREE.CylinderGeometry(0.13, 0.11, 0.3, 20);
     const mugMat = new THREE.MeshStandardMaterial({ color: 0xe4e4e7, roughness: 0.3 });
     const mug = new THREE.Mesh(mugGeo, mugMat);
-    mug.position.set(-1.35, 0.16, 1.25);
+    mug.position.set(-1.28, 0.15, 1.22);
     deskGroup.add(mug);
 
     // 6. Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
     scene.add(ambientLight);
 
-    const screenLight = new THREE.PointLight(0x38bdf8, 1.8, 4.5);
-    screenLight.position.set(0, 1.25, 0.8);
+    const screenLight = new THREE.PointLight(0x38bdf8, 2.0, 4.5);
+    screenLight.position.set(0, 1.25, 0.7);
     deskGroup.add(screenLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
     dirLight.position.set(3, 4, 3);
     scene.add(dirLight);
 
-    const rimLight = new THREE.PointLight(0xa855f7, 1.5, 5);
+    const rimLight = new THREE.PointLight(0xa855f7, 1.4, 5);
     rimLight.position.set(-3, 2, -2);
     scene.add(rimLight);
 
     // 7. Floating Ambient Particles
-    const dustCount = 150;
+    const dustCount = 120;
     const dustGeo = new THREE.BufferGeometry();
     const dustPos = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
-      dustPos[i * 3] = (Math.random() - 0.5) * 8;
-      dustPos[i * 3 + 1] = Math.random() * 4;
-      dustPos[i * 3 + 2] = (Math.random() - 0.5) * 6;
+      dustPos[i * 3] = (Math.random() - 0.5) * 6;
+      dustPos[i * 3 + 1] = Math.random() * 3.5;
+      dustPos[i * 3 + 2] = (Math.random() - 0.5) * 5;
     }
     dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
     const dustMat = new THREE.PointsMaterial({
-      size: 0.022,
+      size: 0.02,
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.45,
     });
     const dust = new THREE.Points(dustGeo, dustMat);
     scene.add(dust);
@@ -217,7 +217,7 @@ const HeroRetroWorkstation3D = () => {
     let frame = 0;
     const terminalLines = [
       "> DHRUV_BAJAJ.sh --mode=production",
-      "> LeetCode Knight · Rating 1933 [1000+ SOLVED]",
+      "> LeetCode Knight · Rating 1933 [TOP 3%]",
       "> Full-Stack MERN & Next.js [INITIALIZED]",
       "> Agentic RAG & LangChain AI [ONLINE]",
       "> CleanCity SIH IoT System [READY]",
@@ -228,10 +228,11 @@ const HeroRetroWorkstation3D = () => {
     let targetRotY = 0;
     let targetRotX = 0;
     const onMouseMove = (e: MouseEvent) => {
-      const normX = (e.clientX / window.innerWidth) * 2 - 1;
-      const normY = -(e.clientY / window.innerHeight) * 2 + 1;
-      targetRotY = normX * 0.22;
-      targetRotX = -normY * 0.12;
+      const rect = container.getBoundingClientRect();
+      const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const normY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+      targetRotY = Math.max(-0.3, Math.min(0.3, normX * 0.25));
+      targetRotX = Math.max(-0.2, Math.min(0.2, -normY * 0.15));
     };
     window.addEventListener("mousemove", onMouseMove);
 
@@ -242,14 +243,14 @@ const HeroRetroWorkstation3D = () => {
       frame++;
 
       // Lerp mouse tilt
-      deskGroup.rotation.y += (targetRotY - deskGroup.rotation.y) * 0.05;
-      deskGroup.rotation.x += (targetRotX - deskGroup.rotation.x) * 0.05;
+      deskGroup.rotation.y += (targetRotY - deskGroup.rotation.y) * 0.06;
+      deskGroup.rotation.x += (targetRotX - deskGroup.rotation.x) * 0.06;
 
       // Dust float
       const positions = dustGeo.attributes.position.array as Float32Array;
       for (let i = 1; i < dustCount * 3; i += 3) {
         positions[i] += 0.002;
-        if (positions[i] > 4) positions[i] = 0;
+        if (positions[i] > 3.5) positions[i] = 0;
       }
       dustGeo.attributes.position.needsUpdate = true;
 
@@ -319,12 +320,7 @@ const HeroRetroWorkstation3D = () => {
     };
   }, []);
 
-  return (
-    <div
-      ref={mountRef}
-      className="absolute inset-0 z-0 pointer-events-none opacity-85 overflow-hidden"
-    />
-  );
+  return <div ref={mountRef} className="w-full h-full" />;
 };
 
 // Roles for Typewriter Text Loop
@@ -381,158 +377,197 @@ export function ActHero({
   return (
     <section
       id="hero"
-      className="relative w-full min-h-screen flex flex-col justify-between px-4 sm:px-8 md:px-16 pt-28 sm:pt-36 pb-12 overflow-hidden pointer-events-none z-10 bg-[#050505]"
+      className="relative w-full min-h-screen flex flex-col justify-between px-4 sm:px-8 md:px-12 lg:px-16 pt-24 sm:pt-32 pb-10 overflow-hidden z-10 bg-[#050505]"
     >
-      {/* 3D Interactive Retro Developer Workstation Canvas */}
-      <HeroRetroWorkstation3D />
+      {/* Subtle Volumetric Ambient Glow in Background */}
+      <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.06)_0%,transparent_70%)] blur-[140px] pointer-events-none z-0" />
 
-      {/* Volumetric Radial Ambient Lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.08)_0%,transparent_70%)] blur-[160px] pointer-events-none z-0" />
-
-      {/* Main Hero Content Layout */}
-      <div className="max-w-4xl mx-auto w-full my-auto space-y-7 pt-4 text-center relative z-10">
+      {/* Main Hero Layout: 2 Columns (Text on Left, Compact 3D Workstation on Right) */}
+      <div className="max-w-7xl mx-auto w-full my-auto flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14 relative z-10">
         
-        {/* Status Pill Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#080808]/90 border border-white/10 text-xs font-semibold text-slate-300 shadow-lg pointer-events-auto backdrop-blur-md"
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Open to SDE Opportunities</span>
-        </motion.div>
-
-        {/* Hero Title */}
-        <div className="space-y-2">
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-white leading-tight"
-          >
-            Dhruv <span className="text-[#FFFFFF]">Bajaj</span>
-          </motion.h1>
-
-          {/* Typewriter Dynamic Role Subtitle */}
+        {/* Left Column: Text & Actions */}
+        <div className="w-full lg:w-[54%] flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
+          
+          {/* Status Pill Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="h-12 flex items-center justify-center"
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#0C0C0E] border border-white/10 text-xs font-semibold text-slate-300 shadow-md backdrop-blur-md"
           >
-            <span className="font-display text-lg sm:text-2xl font-semibold text-white tracking-wide">
-              {currentText}
-              <span className="text-[#FFFFFF] animate-pulse ml-0.5">|</span>
-            </span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Open to SDE Opportunities</span>
           </motion.div>
+
+          {/* Hero Name Title */}
+          <div className="space-y-2">
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="font-display text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-white leading-tight"
+            >
+              Dhruv <span className="text-[#FFFFFF]">Bajaj</span>
+            </motion.h1>
+
+            {/* Typewriter Dynamic Role Subtitle */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="h-10 flex items-center justify-center lg:justify-start"
+            >
+              <span className="font-display text-lg sm:text-2xl font-semibold text-white tracking-wide">
+                {currentText}
+                <span className="text-[#FFFFFF] animate-pulse ml-0.5">|</span>
+              </span>
+            </motion.div>
+          </div>
+
+          {/* Description Paragraph */}
+          <motion.p
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.6 }}
+            className="font-sans text-base sm:text-lg text-[#A8A8A8] max-w-xl leading-relaxed font-light"
+          >
+            Software engineer building production-grade full-stack web platforms and autonomous AI systems. Dedicated to algorithms, scalable architecture, and clean code.
+          </motion.p>
+
+          {/* Hero Action CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.7 }}
+            className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-3.5"
+          >
+            {/* Primary CTA: View My Work ↗ */}
+            <a
+              href="#projects"
+              className="px-7 py-3 rounded-2xl bg-[#FFFFFF] font-sans text-sm font-bold text-black shadow-[0_0_25px_rgba(255,255,255,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.7)] hover:scale-105 transition-all duration-300 flex items-center gap-2"
+            >
+              <span>View My Work</span>
+              <ExternalLink className="w-4 h-4" />
+            </a>
+
+            {/* Secondary CTA: Download Résumé */}
+            <a
+              href={RESUME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-7 py-3 rounded-2xl border border-white/15 text-white font-sans text-sm font-bold hover:border-[#FFFFFF]/60 hover:scale-105 transition-all duration-300 flex items-center gap-2 shadow-lg bg-[#0C0C0E]"
+            >
+              <Download className="w-4 h-4 text-[#FFFFFF]" />
+              <span>Download Résumé</span>
+            </a>
+
+            {/* Tertiary CTA: Contact */}
+            <a
+              href="#contact"
+              className="px-6 py-3 rounded-2xl border border-white/10 text-white/70 hover:text-white font-sans text-sm font-medium hover:border-white/30 hover:bg-white/5 transition-all duration-300 flex items-center gap-2"
+            >
+              <span>Let&apos;s Talk</span>
+            </a>
+          </motion.div>
+
+          {/* Social Icons Row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="pt-1 flex items-center justify-center lg:justify-start gap-3"
+          >
+            <a
+              href="https://github.com/dhruvbajaj13"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-xl text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#0C0C0E]"
+              aria-label="GitHub"
+            >
+              <Github className="w-4 h-4" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/dhruvbajaj13"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-xl text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#0C0C0E]"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+            <a
+              href="mailto:d4bajaj@gmail.com"
+              className="p-3 rounded-xl text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#0C0C0E]"
+              aria-label="Email"
+            >
+              <Mail className="w-4 h-4" />
+            </a>
+          </motion.div>
+
+          {/* Stat Cards Container */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.9 }}
+            className="pt-2 w-full max-w-lg"
+          >
+            <div className="flex flex-row items-center justify-between px-6 py-3.5 rounded-2xl border border-white/10 bg-[#0C0C0E]/90 shadow-xl backdrop-blur-xl">
+              <div className="text-center">
+                <div className="font-display text-xl sm:text-2xl font-extrabold text-[#FFFFFF]">1,000+</div>
+                <div className="font-mono text-[9.5px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">LeetCode Solved</div>
+              </div>
+
+              <div className="w-px h-7 bg-white/10" />
+
+              <div className="text-center">
+                <div className="font-display text-xl sm:text-2xl font-extrabold text-white">6+</div>
+                <div className="font-mono text-[9.5px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">Featured Apps</div>
+              </div>
+
+              <div className="w-px h-7 bg-white/10" />
+
+              <div className="text-center">
+                <div className="font-display text-xl sm:text-2xl font-extrabold text-[#FFFFFF]">Top 3%</div>
+                <div className="font-mono text-[9.5px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">LeetCode Knight</div>
+              </div>
+            </div>
+          </motion.div>
+
         </div>
 
-        {/* Description Paragraph */}
-        <motion.p
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.6 }}
-          className="font-sans text-base sm:text-xl text-[#A8A8A8] max-w-2xl mx-auto leading-relaxed"
-        >
-          Software engineer building production-grade full-stack web platforms and autonomous AI systems. Dedicated to algorithms, scalable architecture, and clean code.
-        </motion.p>
-
-        {/* Hero Action CTA Buttons */}
+        {/* Right Column: Dedicated Compact 3D Workstation (Zero Overlap!) */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.7 }}
-          className="pt-2 flex flex-wrap items-center justify-center gap-3.5 pointer-events-auto"
+          initial={{ opacity: 0, scale: 0.92, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.4 }}
+          className="w-full lg:w-[46%] flex items-center justify-center"
         >
-          {/* Primary CTA: View My Work ↗ */}
-          <a
-            href="#projects"
-            className="px-7 py-3 rounded-2xl bg-[#FFFFFF] font-sans text-sm font-bold text-black shadow-[0_0_25px_rgba(255,255,255,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.7)] hover:scale-105 transition-all duration-300 flex items-center gap-2"
-          >
-            <span>View My Work</span>
-            <ExternalLink className="w-4 h-4" />
-          </a>
-
-          {/* Secondary CTA: Download Résumé */}
-          <a
-            href={RESUME_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-7 py-3 rounded-2xl glass-panel border border-white/15 text-white font-sans text-sm font-bold hover:border-[#FFFFFF]/60 hover:scale-105 transition-all duration-300 flex items-center gap-2 shadow-lg bg-[#080808]"
-          >
-            <Download className="w-4 h-4 text-[#FFFFFF]" />
-            <span>Download Résumé</span>
-          </a>
-
-          {/* Tertiary CTA: Contact */}
-          <a
-            href="#contact"
-            className="px-6 py-3 rounded-2xl border border-white/10 text-white/70 hover:text-white font-sans text-sm font-medium hover:border-white/30 hover:bg-white/5 transition-all duration-300 flex items-center gap-2"
-          >
-            <span>Let&apos;s Talk</span>
-          </a>
-        </motion.div>
-
-        {/* Social Icons Row */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.8 }}
-          className="pt-2 flex items-center justify-center gap-3 pointer-events-auto"
-        >
-          <a
-            href="https://github.com/dhruvbajaj13"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
-            aria-label="GitHub"
-          >
-            <Github className="w-4 h-4" />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/dhruvbajaj13"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
-            aria-label="LinkedIn"
-          >
-            <Linkedin className="w-4 h-4" />
-          </a>
-          <a
-            href="mailto:d4bajaj@gmail.com"
-            className="p-3 rounded-xl glass-panel text-[#A8A8A8] hover:text-white border border-white/10 hover:border-[#FFFFFF] hover:scale-110 transition-all duration-300 shadow-md bg-[#080808]"
-            aria-label="Email"
-          >
-            <Mail className="w-4 h-4" />
-          </a>
-        </motion.div>
-
-        {/* Stat Cards Container */}
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.9 }}
-          className="pt-4 pointer-events-auto"
-        >
-          <div className="inline-flex flex-row items-center justify-center gap-6 sm:gap-12 px-7 py-4 rounded-3xl glass-panel border border-white/10 bg-[#080808]/90 shadow-2xl backdrop-blur-xl">
-            <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">1,000+</div>
-              <div className="font-mono text-[10px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">LeetCode Solved</div>
+          <div className="relative w-full max-w-[460px] lg:max-w-[490px] aspect-[4/3] rounded-3xl border border-white/15 bg-[#0C0C0E]/95 shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden backdrop-blur-2xl flex flex-col group/terminal">
+            
+            {/* Window Header Chrome */}
+            <div className="flex items-center justify-between px-4 py-2.5 bg-[#141418] border-b border-white/10 shrink-0 select-none">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] shadow-[0_0_5px_rgba(255,95,87,0.5)]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E] shadow-[0_0_5px_rgba(254,188,46,0.4)]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#28C840] shadow-[0_0_5px_rgba(40,200,64,0.4)]" />
+              </div>
+              <span className="font-mono text-[10px] text-white/40 tracking-wider">
+                3d-workstation // interactive
+              </span>
+              <span className="flex items-center gap-1 text-[9px] font-mono text-emerald-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                LIVE
+              </span>
             </div>
 
-            <div className="w-px h-8 bg-white/10" />
-
-            <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">6+</div>
-              <div className="font-mono text-[10px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">Featured Apps</div>
-            </div>
-
-            <div className="w-px h-8 bg-white/10" />
-
-            <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">Top 3%</div>
-              <div className="font-mono text-[10px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">LeetCode Knight</div>
+            {/* 3D Canvas Viewport */}
+            <div className="relative flex-1 w-full h-full overflow-hidden">
+              <HeroRetroWorkstation3D />
+              
+              {/* Interaction Instruction Pill */}
+              <div className="absolute bottom-2.5 right-3 font-mono text-[8.5px] text-white/40 bg-black/70 px-2 py-0.5 rounded-full border border-white/8 backdrop-blur-sm pointer-events-none select-none">
+                Move mouse to rotate in 3D
+              </div>
             </div>
           </div>
         </motion.div>
@@ -544,11 +579,12 @@ export function ActHero({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1 }}
-        className="flex items-center justify-center pt-4 relative z-10"
+        className="flex items-center justify-center pt-2 relative z-10"
       >
         <button
           onClick={scrollToNext}
-          className="pointer-events-auto p-2.5 rounded-full glass-panel border border-white/10 text-[#A8A8A8] hover:text-[#FFFFFF] hover:border-[#FFFFFF]/60 transition-colors bg-[#080808]"
+          className="p-2.5 rounded-full border border-white/10 text-[#A8A8A8] hover:text-[#FFFFFF] hover:border-[#FFFFFF]/60 transition-colors bg-[#080808]"
+          aria-label="Scroll to About"
         >
           <ArrowDown className="w-4 h-4 animate-bounce text-[#FFFFFF]" />
         </button>
