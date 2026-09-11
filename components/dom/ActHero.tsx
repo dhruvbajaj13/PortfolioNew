@@ -191,27 +191,52 @@ export function ActHero({
           </motion.div>
         </div>
 
-        {/* Description Paragraph (Matching Screenshot) */}
+        {/* Description Paragraph */}
         <motion.p
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.6 }}
           className="font-sans text-base sm:text-xl text-[#A8A8A8] max-w-2xl mx-auto leading-relaxed"
         >
-          ECE undergrad at NSUT building full-stack products and AI systems. I turn ideas into production-ready software — fast, clean, and scalable.
+          Final year B.Tech student at <span className="text-white font-medium">NSUT</span> pursuing ECE with IoT specialization. Passionate software engineer building full-stack platforms, agentic AI systems, and solving complex DSA problems.
         </motion.p>
 
-        {/* Hero Action CTA Buttons (Matching Screenshot) */}
+        {/* Floating Quick Domain Badges */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.65 }}
+          className="flex flex-wrap items-center justify-center gap-2 pointer-events-auto pt-1"
+        >
+          <span className="px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 font-mono text-[10.5px] font-semibold flex items-center gap-1.5 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            LeetCode Knight · Top 3%
+          </span>
+          <span className="px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 font-mono text-[10.5px] font-semibold flex items-center gap-1.5 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+            Agentic RAG & LangChain
+          </span>
+          <span className="px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-mono text-[10.5px] font-semibold flex items-center gap-1.5 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Smart India Hackathon Finalist
+          </span>
+          <span className="px-3 py-1 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 font-mono text-[10.5px] font-semibold flex items-center gap-1.5 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+            Full-Stack MERN & Next.js
+          </span>
+        </motion.div>
+
+        {/* Hero Action CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.7 }}
-          className="pt-2 flex flex-wrap items-center justify-center gap-4 pointer-events-auto"
+          className="pt-2 flex flex-wrap items-center justify-center gap-3.5 pointer-events-auto"
         >
           {/* Primary CTA: View My Work ↗ */}
           <a
             href="#projects"
-            className="px-8 py-3.5 rounded-2xl bg-[#FFFFFF] font-sans text-sm font-bold text-black shadow-[0_0_25px_rgba(255,255,255,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.7)] hover:scale-105 transition-all duration-300 flex items-center gap-2"
+            className="px-7 py-3 rounded-2xl bg-[#FFFFFF] font-sans text-sm font-bold text-black shadow-[0_0_25px_rgba(255,255,255,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.7)] hover:scale-105 transition-all duration-300 flex items-center gap-2"
           >
             <span>View My Work</span>
             <ExternalLink className="w-4 h-4" />
@@ -222,19 +247,27 @@ export function ActHero({
             href={RESUME_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3.5 rounded-2xl glass-panel border border-white/10 text-white font-sans text-sm font-bold hover:border-[#FFFFFF]/60 hover:scale-105 transition-all duration-300 flex items-center gap-2 shadow-lg bg-[#080808]"
+            className="px-7 py-3 rounded-2xl glass-panel border border-white/15 text-white font-sans text-sm font-bold hover:border-[#FFFFFF]/60 hover:scale-105 transition-all duration-300 flex items-center gap-2 shadow-lg bg-[#080808]"
           >
             <Download className="w-4 h-4 text-[#FFFFFF]" />
             <span>Download Résumé</span>
           </a>
+
+          {/* Tertiary CTA: Contact */}
+          <a
+            href="#contact"
+            className="px-6 py-3 rounded-2xl border border-white/10 text-white/70 hover:text-white font-sans text-sm font-medium hover:border-white/30 hover:bg-white/5 transition-all duration-300 flex items-center gap-2"
+          >
+            <span>Let&apos;s Talk</span>
+          </a>
         </motion.div>
 
-        {/* Social Icons Row (Matching Screenshot) */}
+        {/* Social Icons Row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="pt-4 flex items-center justify-center gap-3 pointer-events-auto"
+          className="pt-2 flex items-center justify-center gap-3 pointer-events-auto"
         >
           <a
             href="https://github.com/dhruvbajaj13"
@@ -263,31 +296,31 @@ export function ActHero({
           </a>
         </motion.div>
 
-        {/* Stat Cards Container (Matching Screenshot Exactly) */}
+        {/* Stat Cards Container */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.9 }}
-          className="pt-6 pointer-events-auto"
+          className="pt-4 pointer-events-auto"
         >
-          <div className="inline-flex flex-row items-center justify-center gap-8 sm:gap-14 px-8 py-5 rounded-3xl glass-panel border border-white/10 bg-[#080808]/90 shadow-2xl backdrop-blur-xl">
+          <div className="inline-flex flex-row items-center justify-center gap-6 sm:gap-12 px-7 py-4 rounded-3xl glass-panel border border-white/10 bg-[#080808]/90 shadow-2xl backdrop-blur-xl">
             <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">10+</div>
-              <div className="font-mono text-[11px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">Projects Shipped</div>
+              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">1,000+</div>
+              <div className="font-mono text-[10px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">LeetCode Solved</div>
             </div>
 
             <div className="w-px h-8 bg-white/10" />
 
             <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">5+</div>
-              <div className="font-mono text-[11px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">Tech Stacks</div>
+              <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">6+</div>
+              <div className="font-mono text-[10px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">Featured Apps</div>
             </div>
 
             <div className="w-px h-8 bg-white/10" />
 
             <div className="text-center">
-              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">2027</div>
-              <div className="font-mono text-[11px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">Graduating</div>
+              <div className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF]">NSUT</div>
+              <div className="font-mono text-[10px] text-[#A8A8A8] uppercase tracking-wider mt-0.5">ECE · Final Year</div>
             </div>
           </div>
         </motion.div>

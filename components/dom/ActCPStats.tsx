@@ -83,13 +83,13 @@ const PLATFORMS_DATA = [
   {
     id: 'geeksforgeeks',
     name: 'GeeksforGeeks',
-    tagline: 'DSA & Practice Problems',
-    badge: 'Campus Rank · NSUT',
+    tagline: 'DSA & Core Problem Solving',
+    badge: 'Consistent Problem Solver',
     profileUrl: 'https://www.geeksforgeeks.org/profile/d4ba0ewg',
     stats: [
-      { label: 'Solved', value: '250+' },
-      { label: 'Score', value: '600+' },
-      { label: 'Campus', value: 'NSUT' },
+      { label: 'Solved', value: '60+' },
+      { label: 'Score', value: '180+' },
+      { label: 'Streak', value: 'Active' },
     ],
     Logo: GeeksforGeeksLogo,
   },
