@@ -45,7 +45,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     title: 'RAG AI Agent',
     tagline: 'Autonomous Document Intelligence & Live Search',
     category: 'GenAI & Agents',
-    image: '/images/rag_agent.jpg',
+    image: '/images/rag_agent.png',
     browserUrl: 'https://github.com/dhruvbajaj13/RAG-Based-AI-Document-Agent',
     problem: 'Standard LLMs hallucinate outdated information and cannot securely reason over proprietary internal documents or live web facts.',
     solution: 'Hybrid agentic RAG system built on LangChain with ChromaDB vector embeddings, semantic query routing, and real-time DuckDuckGo search fallback with citations.',
@@ -61,7 +61,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     title: 'Stock Market Analyzer',
     tagline: 'Real-Time Equity Analytics & Technical Indicators',
     category: 'FinTech & Analytics',
-    image: '/images/stock_analyser.jpg',
+    image: '/images/stock_analyser.png',
     browserUrl: 'https://stock-market-analyzer-we8x.vercel.app',
     problem: 'Retail investors struggle with fragmented platforms for analyzing real-time stock quotes, candlestick patterns, and technical indicators.',
     solution: 'Modern financial dashboard featuring real-time equity quotes, interactive candlestick charts, automated RSI/MACD indicators, and personalized watchlist tracking.',
@@ -75,7 +75,9 @@ export const PROJECTS_DATA: ProjectItem[] = [
     title: 'CodeCraft',
     tagline: 'SaaS Cloud IDE & Multi-Language Runner',
     category: 'Cloud DevTools',
-    image: '/images/codecraft.jpg',
+    image: '/images/codecraft_home.png',
+    images: ['/images/codecraft_home.png', '/images/codecraft_editor.png'],
+    imageLabels: ['Home', 'Editor'],
     browserUrl: 'https://code-craft-two-livid.vercel.app',
     problem: 'Local developer environment setups are slow, resource-heavy, and inconvenient for quick multi-language code testing.',
     solution: 'Cloud-based web IDE powered by Monaco Editor and Judge0 sandboxed API, allowing instant compilation and execution in 10+ languages with zero local setup.',
@@ -91,7 +93,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     title: 'Synthex',
     tagline: 'AI Web Productivity Chrome Extension',
     category: 'Browser Extensions',
-    image: '/images/synthex.jpg',
+    image: '/images/synthex.png',
     browserUrl: 'https://github.com/dhruvbajaj13/Synthex',
     problem: 'Constantly switching tabs to prompt ChatGPT interrupts reading focus, email drafting, and online research.',
     solution: 'Manifest V3 Chrome Extension providing contextual AI text actions directly on highlighted webpage text with one-click summarization and smart reply drafting.',
@@ -139,9 +141,17 @@ function ProjectCardMedia({
 
   const hasMultiple = images.length > 1;
 
+  // Choose optimal image alignment
+  const objectPosition =
+    project.id === 'rag-agent'
+      ? 'object-top'
+      : hasMultiple
+      ? 'object-bottom'
+      : 'object-center';
+
   return (
     <div
-      className="relative w-full aspect-[16/9.5] overflow-hidden bg-[#070707] border-b border-white/8 group/img select-none"
+      className="relative w-full aspect-[16/9] overflow-hidden bg-[#070707] border-b border-white/8 group/img select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -154,15 +164,18 @@ function ProjectCardMedia({
           animate={{ opacity: 0.95, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.45, ease: 'easeInOut' }}
-          className={`w-full h-full object-cover ${hasMultiple ? 'object-bottom' : 'object-center'} group-hover/img:opacity-100 transition-opacity`}
+          className={`w-full h-full object-cover ${objectPosition} group-hover/img:opacity-100 group-hover/img:scale-105 transition-all duration-700 ease-out`}
           loading="lazy"
         />
       </AnimatePresence>
 
       <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0C] via-transparent to-transparent pointer-events-none" />
 
+      {/* Subtle shine sweep overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover/img:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+
       {/* Subtle project index pill */}
-      <div className="absolute top-2.5 left-3 font-mono text-[9px] font-bold text-white/80 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 z-10">
+      <div className="absolute top-2.5 left-3 font-mono text-[9px] font-bold text-white/80 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 z-10 shadow-sm">
         0{index + 1} // {project.category}
       </div>
 
@@ -180,7 +193,7 @@ function ProjectCardMedia({
                   e.stopPropagation();
                   setActiveIdx(idx);
                 }}
-                className={`px-2 py-0.5 rounded-full text-[9px] font-mono transition-all backdrop-blur-md border ${
+                className={`px-2 py-0.5 rounded-full text-[8.5px] font-mono transition-all backdrop-blur-md border ${
                   isActive
                     ? 'bg-white text-black font-bold border-white shadow-[0_0_8px_rgba(255,255,255,0.4)] scale-105'
                     : 'bg-black/60 text-white/50 border-white/10 hover:text-white hover:border-white/30'
@@ -199,20 +212,20 @@ function ProjectCardMedia({
 
 export function ActProjects() {
   return (
-    <section id="projects" className="relative bg-[#050505] pt-14 pb-20 md:pt-20 md:pb-28">
+    <section id="projects" className="relative bg-[#050505] pt-12 pb-18 md:pt-16 md:pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
 
         {/* Section Header */}
-        <div className="mb-10 md:mb-12">
+        <div className="mb-8 md:mb-10">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-mono text-xs tracking-[0.25em] text-white/40 uppercase mb-2.5"
+            className="font-mono text-xs tracking-[0.25em] text-white/40 uppercase mb-2"
           >
             — Selected Works —
           </motion.p>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -221,37 +234,37 @@ export function ActProjects() {
             >
               Projects
             </motion.h2>
-            <span className="font-mono text-[11px] text-white/40 tracking-wider">
+            <span className="font-mono text-[10.5px] text-white/40 tracking-wider">
               [ 6 Featured Applications · 3 × 2 Grid ]
             </span>
           </div>
         </div>
 
         {/* 3 Rows × 2 Columns Responsive Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
           {PROJECTS_DATA.map((proj, i) => (
             <motion.div
               key={proj.id}
-              initial={{ opacity: 0, y: 25 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.45, delay: (i % 2) * 0.12 }}
+              viewport={{ once: true, margin: '-30px' }}
+              transition={{ duration: 0.4, delay: (i % 2) * 0.1 }}
               whileHover={{ y: -4 }}
-              className="group relative rounded-2xl border border-white/10 bg-[#0C0C0C] overflow-hidden shadow-[0_12px_35px_rgba(0,0,0,0.8)] hover:border-white/25 hover:shadow-[0_20px_50px_rgba(0,0,0,0.95)] transition-all duration-300 flex flex-col justify-between"
+              className="group/card relative rounded-2xl border border-white/10 bg-[#0C0C0C] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:border-white/25 hover:shadow-[0_16px_45px_rgba(0,0,0,0.95)] transition-all duration-300 flex flex-col justify-between"
             >
               {/* macOS Browser Header Bar */}
-              <div className="flex items-center justify-between px-4 py-2.5 bg-[#121212] border-b border-white/8">
+              <div className="flex items-center justify-between px-3.5 py-2 bg-[#121212] border-b border-white/8">
                 {/* Traffic light dots */}
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] shadow-[0_0_5px_rgba(255,95,87,0.5)]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E] shadow-[0_0_5px_rgba(254,188,46,0.4)]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#28C840] shadow-[0_0_5px_rgba(40,200,64,0.4)]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] shadow-[0_0_5px_rgba(255,95,87,0.5)] group-hover/card:brightness-110 transition-all" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E] shadow-[0_0_5px_rgba(254,188,46,0.4)] group-hover/card:brightness-110 transition-all" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#28C840] shadow-[0_0_5px_rgba(40,200,64,0.4)] group-hover/card:brightness-110 transition-all" />
                 </div>
 
                 {/* Browser URL Search Bar */}
-                <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#080808] border border-white/10 max-w-[200px] sm:max-w-[240px] truncate">
+                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#080808] border border-white/10 max-w-[190px] sm:max-w-[220px] truncate">
                   <Globe className="w-2.5 h-2.5 text-white/30 shrink-0" />
-                  <span className="font-mono text-[9.5px] text-white/50 truncate select-none">
+                  <span className="font-mono text-[9px] text-white/50 truncate select-none">
                     {proj.browserUrl ? proj.browserUrl.replace('https://', '') : `${proj.id}.dev`}
                   </span>
                 </div>
@@ -271,7 +284,7 @@ export function ActProjects() {
                     href={proj.liveDemo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-2 h-6 rounded-full bg-white text-black font-bold uppercase tracking-wider text-[8px] flex items-center gap-0.5 hover:scale-105 transition-transform"
+                    className="px-2 h-6 rounded-full bg-white text-black font-bold uppercase tracking-wider text-[8px] flex items-center gap-0.5 hover:scale-105 transition-transform shadow-sm"
                     title="Open Live App"
                   >
                     <span>Live</span>
@@ -284,25 +297,25 @@ export function ActProjects() {
               <ProjectCardMedia project={proj} index={i} />
 
               {/* Card Body Details */}
-              <div className="p-4 sm:p-5 flex flex-col gap-3.5 flex-1 justify-between">
-                <div className="space-y-1.5">
-                  <h3 className="font-display font-black text-xl md:text-[22px] text-white tracking-tight uppercase">
+              <div className="p-3.5 sm:p-4 flex flex-col gap-3 flex-1 justify-between">
+                <div className="space-y-1">
+                  <h3 className="font-display font-black text-lg sm:text-xl text-white tracking-tight uppercase">
                     {proj.title}
                   </h3>
-                  <p className="text-white/50 text-[11.5px] font-light leading-relaxed">
+                  <p className="text-white/50 text-[11px] font-light leading-snug">
                     {proj.tagline}
                   </p>
 
                   {/* Problem & Solution Block */}
-                  <div className="pt-1.5 space-y-2 text-[11px] text-white/65 leading-relaxed font-light">
+                  <div className="pt-1 space-y-1.5 text-[10.5px] text-white/65 leading-relaxed font-light">
                     <div>
-                      <span className="font-mono text-[8.5px] tracking-widest text-white/30 uppercase block mb-0.5 font-bold">
+                      <span className="font-mono text-[8px] tracking-widest text-white/30 uppercase block mb-0.5 font-bold">
                         // Problem
                       </span>
                       <p className="line-clamp-2">{proj.problem}</p>
                     </div>
                     <div>
-                      <span className="font-mono text-[8.5px] tracking-widest text-white/30 uppercase block mb-0.5 font-bold">
+                      <span className="font-mono text-[8px] tracking-widest text-white/30 uppercase block mb-0.5 font-bold">
                         // Solution
                       </span>
                       <p className="line-clamp-2">{proj.solution}</p>
@@ -311,12 +324,12 @@ export function ActProjects() {
                 </div>
 
                 {/* Tech Stack Badges */}
-                <div className="pt-2 border-t border-white/8 space-y-2.5">
+                <div className="pt-2 border-t border-white/8 space-y-2">
                   <div className="flex flex-wrap gap-1">
                     {proj.techStack.map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.04] text-[9.5px] font-mono text-white/70 hover:border-white/30 hover:text-white transition-colors"
+                        className="px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.04] text-[9px] font-mono text-white/70 hover:border-white/30 hover:text-white transition-colors"
                       >
                         {tech}
                       </span>
@@ -326,7 +339,7 @@ export function ActProjects() {
                   {/* Key Highlights */}
                   <ul className="grid grid-cols-2 gap-1 pt-0.5">
                     {proj.features.slice(0, 4).map((f) => (
-                      <li key={f} className="flex items-center gap-1.5 text-[9.5px] text-white/40 truncate">
+                      <li key={f} className="flex items-center gap-1.5 text-[9px] text-white/40 truncate">
                         <span className="w-1 h-1 rounded-full bg-white/40 shrink-0" />
                         <span className="truncate">{f}</span>
                       </li>

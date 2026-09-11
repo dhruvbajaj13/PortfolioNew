@@ -29,6 +29,17 @@ const CodeChefLogo = () => (
   </svg>
 );
 
+const GeeksforGeeksLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10zm-1.25 5.5a1.25 1.25 0 0 0-1.25 1.25v2.5a1.25 1.25 0 0 1-1.25 1.25 1.25 1.25 0 0 1 1.25 1.25v2.5A1.25 1.25 0 0 0 10.75 17h.5a.75.75 0 0 0 0-1.5h-.25v-2.25a2.75 2.75 0 0 0-2.25-2.7 2.75 2.75 0 0 0 2.25-2.7V7.5h.25a.75.75 0 0 0 0-1.5h-.5zm2.5 0a.75.75 0 0 0 0 1.5h.25v.35a2.75 2.75 0 0 0 2.25 2.7 2.75 2.75 0 0 0-2.25 2.7v2.25h-.25a.75.75 0 0 0 0 1.5h.5a1.25 1.25 0 0 0 1.25-1.25v-2.5a1.25 1.25 0 0 1 1.25-1.25 1.25 1.25 0 0 1-1.25-1.25v-2.5A1.25 1.25 0 0 0 13.25 7.5h-.5z"
+      fill="#2F8D46"
+    />
+  </svg>
+);
+
 /* ─── Animated Counter ─── */
 function AnimatedCounter({ target, duration = 1000 }: { target: string; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -68,6 +79,19 @@ const PLATFORMS_DATA = [
       { label: 'Contests', value: '42' },
     ],
     Logo: LeetCodeLogo,
+  },
+  {
+    id: 'geeksforgeeks',
+    name: 'GeeksforGeeks',
+    tagline: 'DSA & Practice Problems',
+    badge: 'Campus Rank · NSUT',
+    profileUrl: 'https://www.geeksforgeeks.org/profile/d4ba0ewg',
+    stats: [
+      { label: 'Solved', value: '250+' },
+      { label: 'Score', value: '600+' },
+      { label: 'Campus', value: 'NSUT' },
+    ],
+    Logo: GeeksforGeeksLogo,
   },
   {
     id: 'codeforces',
